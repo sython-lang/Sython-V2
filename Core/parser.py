@@ -46,8 +46,8 @@ class Parser:
             return p[2]
 
         @self.pg.production('expression : INT OPEN_PAREN expression CLOSE_PAREN')
-        @self.pg.production('expression : FLOAT OPEN_PAREN expression CLOSE_PAREN')
-        @self.pg.production('expression : BOOLEAN OPEN_PAREN expression CLOSE_PAREN')
+        @self.pg.production('expression : FLOATF OPEN_PAREN expression CLOSE_PAREN')
+        @self.pg.production('expression : BOOL OPEN_PAREN expression CLOSE_PAREN')
         @self.pg.production('expression : STR OPEN_PAREN expression CLOSE_PAREN')
         @self.pg.production('expression : TYPE OPEN_PAREN expression CLOSE_PAREN')
         @self.pg.production('expression : PRINT OPEN_PAREN expression CLOSE_PAREN')
@@ -187,13 +187,13 @@ class Parser:
         @self.pg.production('expression : INTEGER')
         @self.pg.production('expression : FLOAT')
         @self.pg.production('expression : STRING')
-        @self.pg.production('expression : BOOL')
+        @self.pg.production('expression : BOOLEAN')
         def expression(p):
             if p[0].gettokentype() == 'FLOAT':
                 return ExpressionBase(float(p[0].value), "float")
             elif p[0].gettokentype() == 'STRING':
                 return ExpressionBase(str(p[0].value)[1:-1], "string")
-            elif p[0].gettokentype() == 'BOOL':
+            elif p[0].gettokentype() == 'BOOLEAN':
                 if p[0].value == "false":
                     return ExpressionBase(False, "boolean")
                 return ExpressionBase(True, "boolean")
