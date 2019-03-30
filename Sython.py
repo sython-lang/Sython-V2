@@ -2,22 +2,20 @@ from Core.lexer import Lexer
 from Core.parser import Parser
 import sys
 
-tokens = ['PRINT', 'EXIT', 'ENTER', 'INT', 'FLOAT', 'STR',
+tokens = ['PRINT', 'EXIT', 'ENTER', 'INT', 'FLOAT', 'STR', 'COMMENT',
           'TYPE', 'BOOLEAN', 'BOOL', 'FLOAT',
           'INCREMENT', 'DECREMENT', 'INTEGER', 'SUMAFF',
           'SUBAFF', 'MULAFF', 'DIVAFF', 'MODAFF', 'POWAFF',
           'OPEN_PAREN', 'CLOSE_PAREN', 'SUM',
           'SUB', 'MUL', 'DIV', 'MOD', 'POW', 'EGAL',
-          'STRING', 'IDENTIFIER',
-          'COMMENT']
-values = [r'show', r'exit', r'enter', r'int', r'float', r'str',
+          'STRING', 'IDENTIFIER']
+values = [r'show', r'exit', r'enter', r'int', r'float', r'str', r'//.*',
           r'type', r'bool', r'(true)|(false)', r'-?\d+.\d+',
           r'\+\+', r'\-\-', r'-?\d+', r'\+\=',
           r'\-\=', r'\*\=', r'\/\=', r'\%\=', r'\^=',
           r'\(', r'\)', r'\+',
           r'\-', r'\*', r'\/', r'\%', r'\^', r'\=',
-          r'(\"([^\\\n]|(\\.))*?\")|(\'([^\\\n]|(\\.))*?\')', r"[a-zA-Z][a-zA-Z0-9]*",
-          r'\#.*']
+          r'(\"([^\\\n]|(\\.))*?\")|(\'([^\\\n]|(\\.))*?\')', r"[a-zA-Z][a-zA-Z0-9]*"]
 
 lexer = Lexer(tokens, values).get_lexer()
 pg = Parser(tokens)
