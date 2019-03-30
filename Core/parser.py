@@ -1,8 +1,8 @@
 from rply import ParserGenerator
 import sys
 
-from Core.AST.BinaryOperators import Sum, Sub, Mul, Div, Mod, Pow
 from Core.AST.AffectionOperators import SumAffector, SubAffector, MulAffector, DivAffector, ModAffector, PowAffector
+from Core.AST.BinaryOperators import Sum, Sub, Mul, Div, Mod, Pow, DivEu
 from Core.AST.Expressions import ExpressionBase, Nothing
 from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean
 from Core.AST.Variables import Variable, Variables
@@ -20,7 +20,7 @@ class Parser:
                 ('left', ['MULAFF', 'DIVAFF', 'MODAFF']),
                 ('left', ['POWAFF']),
                 ('left', ['SUM', 'SUB']),
-                ('left', ['MUL', 'DIV', 'MOD']),
+                ('left', ['MUL', 'DIV', 'DIVEU', 'MOD']),
                 ('left', ['POW'])
             ]
         )
@@ -59,11 +59,11 @@ class Parser:
                 i = Int(exp)
                 i.apply()
                 return i
-            elif func.gettokentype() == "FLOAT":
+            elif func.gettokentype() == "FLOATF":
                 i = Float(exp)
                 i.apply()
                 return i
-            elif func.gettokentype() == "BOOLEAN":
+            elif func.gettokentype() == "BOOL":
                 i = Boolean(exp)
                 i.apply()
                 return i
@@ -157,6 +157,7 @@ class Parser:
         @self.pg.production('expression : expression DIV expression')
         @self.pg.production('expression : expression MOD expression')
         @self.pg.production('expression : expression POW expression')
+        @self.pg.production('expression : expression DIVEU expression')
         def binaryop(p):
             left = p[0]
             right = p[2]
@@ -171,6 +172,8 @@ class Parser:
                 return Mod(left, right)
             elif operator.gettokentype() == 'POW':
                 return Pow(left, right)
+            elif operator.gettokentype() == 'DIVEU':
+                return DivEu(left, right)
             else:
                 return Div(left, right)
 

@@ -64,6 +64,20 @@ class Div(BinaryOp):
                 sys.exit(1)
 
 
+class DivEu(BinaryOp):
+    def eval(self):
+        try:
+            return self.left.eval() // self.right.eval()
+        except:
+            try:
+                return self.left.diveu(self.right)
+            except:
+                print("Operation impossible : \n - Values :", self.left.eval(), "|", self.right.eval(),
+                      "\n - Types :", self.left.kind, "|", self.right.kind,
+                      "\n - Operation : Euclidean Division")
+                sys.exit(1)
+
+
 class Pow(BinaryOp):
     def eval(self):
         try:
