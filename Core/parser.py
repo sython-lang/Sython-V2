@@ -8,6 +8,7 @@ from Core.AST.Expressions import ExpressionBase, Nothing
 from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean
 from Core.AST.Variables import Variable, Variables
 from Core.AST.UniqueOperators import Increment, Decrement
+from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
 
 
 class Parser:
@@ -17,6 +18,7 @@ class Parser:
             tokens,
             precedence=[
                 ('left', ['EGAL']),
+                ('left', ['IS', 'LESS', 'MORE', 'LESSE', 'MOREE']),
                 ('left', ['SUMAFF', 'SUBAFF']),
                 ('left', ['MULAFF', 'DIVAFF', 'DIVEUAFF', 'MODAFF']),
                 ('left', ['POWAFF']),
@@ -58,30 +60,20 @@ class Parser:
             exp = p[2]
             if func.gettokentype() == "INT":
                 i = Int(exp)
-                i.apply()
-                return i
             elif func.gettokentype() == "FLOATF":
                 i = Float(exp)
-                i.apply()
-                return i
             elif func.gettokentype() == "BOOL":
                 i = Boolean(exp)
-                i.apply()
-                return i
             elif func.gettokentype() == "STR":
                 i = Str(exp)
-                i.apply()
-                return i
             elif func.gettokentype() == "TYPE":
                 return Type(exp)
             elif func.gettokentype() == "PRINT":
                 i = Print(exp)
-                i.apply()
-                return i
             else:
                 i = Input(exp.value)
-                i.apply()
-                return i
+            i.apply()
+            return i
 
         @self.pg.production('expression : EXIT OPEN_PAREN CLOSE_PAREN')
         @self.pg.production('expression : ENTER OPEN_PAREN CLOSE_PAREN')
@@ -180,6 +172,28 @@ class Parser:
                 return DivEu(left, right)
             else:
                 return Div(left, right)
+
+        @self.pg.production('expression : expression IS expression')
+        @self.pg.production('expression : expression LESS expression')
+        @self.pg.production('expression : expression LESSE expression')
+        @self.pg.production('expression : expression MORE expression')
+        @self.pg.production('expression : expression MOREE expression')
+        def comparators(p):
+            c = p[1]
+            e1 = p[0]
+            e2 = p[2]
+            if c.gettokentype() == "IS":
+                i = Egal(e1, e2)
+            elif c.gettokentype() == "LESS":
+                i = Less(e1, e2)
+            elif c.gettokentype() == "MORE":
+                i = More(e1, e2)
+            elif c.gettokentype() == "LESSE":
+                i = LessOrEgal(e1, e2)
+            else:
+                i = MoreOrEgal(e1, e2)
+            i.apply()
+            return i.eval()
 
         @self.pg.production('expression : SUB expression')
         @self.pg.production('expression : SUM expression')

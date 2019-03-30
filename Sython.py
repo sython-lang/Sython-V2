@@ -13,7 +13,7 @@ dico = {
     'INTEGER': r'-?\d+',
 
     # Functions
-    'PRINT': r'print',
+    'PRINT': r'show',
     'EXIT': r'exit',
     'ENTER': r'enter',
     'INT': r'int',
@@ -21,6 +21,13 @@ dico = {
     'STR': r'str',
     'TYPE': r'type',
     'BOOL': r'boolean',
+
+    # Comparators
+    'IS': r'\=\=',
+    'LESSE': r'\<\=',
+    'MOREE': r'\>\=',
+    'LESS': r'\<',
+    'MORE': r'\>',
 
     # Operators on variables
     'INCREMENT': r'\+\+',
