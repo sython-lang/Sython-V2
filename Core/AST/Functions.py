@@ -6,7 +6,7 @@ import sys
 class Print(BaseBox):
     def __init__(self, value=ExpressionBase("", "string")):
         self.value = value
-        self.kind = self.value.kind
+        self.kind = "string"
 
     def apply(self):
         print(self.value.eval())
