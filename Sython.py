@@ -2,20 +2,58 @@ from Core.lexer import Lexer
 from Core.parser import Parser
 import sys
 
-tokens = ['PRINT', 'EXIT', 'ENTER', 'INT', 'FLOAT', 'STR', 'COMMENT',
-          'TYPE', 'BOOLEAN', 'BOOL', 'FLOAT',
-          'INCREMENT', 'DECREMENT', 'INTEGER', 'SUMAFF',
-          'SUBAFF', 'MULAFF', 'DIVAFF', 'MODAFF', 'POWAFF',
-          'OPEN_PAREN', 'CLOSE_PAREN', 'SUM',
-          'SUB', 'MUL', 'DIV', 'MOD', 'POW', 'EGAL',
-          'STRING', 'IDENTIFIER']
-values = [r'show', r'exit', r'enter', r'int', r'float', r'str', r'//.*',
-          r'type', r'bool', r'(true)|(false)', r'-?\d+.\d+',
-          r'\+\+', r'\-\-', r'-?\d+', r'\+\=',
-          r'\-\=', r'\*\=', r'\/\=', r'\%\=', r'\^=',
-          r'\(', r'\)', r'\+',
-          r'\-', r'\*', r'\/', r'\%', r'\^', r'\=',
-          r'(\"([^\\\n]|(\\.))*?\")|(\'([^\\\n]|(\\.))*?\')', r"[a-zA-Z][a-zA-Z0-9]*"]
+dico = {
+    # Comments
+    'COMMENT': r'#.*',
+
+    # Types
+    'STRING': r'(\"([^\\\n]|(\\.))*?\")|(\'([^\\\n]|(\\.))*?\')',
+    'BOOLEAN': r'(true)|(false)',
+    'FLOAT': r'-?\d+.\d+',
+    'INTEGER': r'-?\d+',
+
+    # Functions
+    'PRINT': r'print',
+    'EXIT': r'exit',
+    'ENTER': r'enter',
+    'INT': r'int',
+    'FLOATF': r'float',
+    'STR': r'str',
+    'TYPE': r'type',
+    'BOOL': r'boolean',
+
+    # Operators on variables
+    'INCREMENT': r'\+\+',
+    'DECREMENT': r'\-\-',
+    'SUMAFF': r'\+\=',
+    'SUBAFF': r'\-\=',
+    'MULAFF': r'\*\=',
+    'MODAFF': r'\%\=',
+    'POWAFF': r'\^\=',
+
+    # Binary Operators on expressions
+    'SUM': r'\+',
+    'SUB': r'\-',
+    'MUL': r'\*',
+    'DIV': r'\/',
+    'DIVEU': r'\/\/',
+    'MOD': r'\%',
+    'POW': r'\^',
+
+    # For variables
+    'EGAL': r'\=',
+    'IDENTIFIER': r"[a-zA-Z][a-zA-Z0-9]*",
+
+    # Others
+    'OPEN_PAREN': r'\(',
+    'CLOSE_PAREN': r'\)'
+}
+
+tokens = []
+values = []
+for k, v in dico.items():
+    tokens.append(k)
+    values.append(v)
 
 lexer = Lexer(tokens, values).get_lexer()
 pg = Parser(tokens)
