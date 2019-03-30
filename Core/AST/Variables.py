@@ -1,4 +1,7 @@
-class Variables:
+from rply.token import BaseBox
+
+
+class Variables(BaseBox):
     def __init__(self):
         self.vars = []
 
@@ -20,7 +23,7 @@ class Variables:
             var.exp = exp
 
 
-class Variable:
+class Variable(BaseBox):
     def __init__(self, name, exp):
         self.name = name
         self.exp = exp

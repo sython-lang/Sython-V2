@@ -2,8 +2,9 @@ from rply import ParserGenerator
 import sys
 
 from Core.AST.BinaryOperators import Sum, Sub, Mul, Div, Mod, Pow
+from Core.AST.AffectionOperators import SumAffector, SubAffector, MulAffector, DivAffector, ModAffector, PowAffector
 from Core.AST.Expressions import ExpressionBase, Nothing
-from Core.AST.Functions import Print, Input
+from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean
 from Core.AST.Variables import Variable, Variables
 from Core.AST.UniqueOperators import Increment, Decrement
 
@@ -15,6 +16,9 @@ class Parser:
             tokens,
             precedence=[
                 ('left', ['EGAL']),
+                ('left', ['SUMAFF', 'SUBAFF']),
+                ('left', ['MULAFF', 'DIVAFF', 'MODAFF']),
+                ('left', ['POWAFF']),
                 ('left', ['SUM', 'SUB']),
                 ('left', ['MUL', 'DIV', 'MOD']),
                 ('left', ['POW'])
@@ -39,19 +43,60 @@ class Parser:
         def programvar(p):
             var = Variable(p[0].value, p[2])
             self.var.add(var)
-            return var
+            return p[2]
 
+        @self.pg.production('expression : INT OPEN_PAREN expression CLOSE_PAREN')
+        @self.pg.production('expression : FLOAT OPEN_PAREN expression CLOSE_PAREN')
+        @self.pg.production('expression : BOOLEAN OPEN_PAREN expression CLOSE_PAREN')
+        @self.pg.production('expression : STR OPEN_PAREN expression CLOSE_PAREN')
+        @self.pg.production('expression : TYPE OPEN_PAREN expression CLOSE_PAREN')
         @self.pg.production('expression : PRINT OPEN_PAREN expression CLOSE_PAREN')
-        def programprint(p):
-            return Print(p[2])
+        @self.pg.production('expression : ENTER OPEN_PAREN STRING CLOSE_PAREN')
+        def programfunc1(p):
+            func = p[0]
+            exp = p[2]
+            if func.gettokentype() == "INT":
+                i = Int(exp)
+                i.apply()
+                return i
+            elif func.gettokentype() == "FLOAT":
+                i = Float(exp)
+                i.apply()
+                return i
+            elif func.gettokentype() == "BOOLEAN":
+                i = Boolean(exp)
+                i.apply()
+                return i
+            elif func.gettokentype() == "STR":
+                i = Str(exp)
+                i.apply()
+                return i
+            elif func.gettokentype() == "TYPE":
+                return Type(exp)
+            elif func.gettokentype() == "PRINT":
+                i = Print(exp)
+                i.apply()
+                return i
+            else:
+                i = Input(exp.value)
+                i.apply()
+                return i
 
         @self.pg.production('expression : EXIT OPEN_PAREN CLOSE_PAREN')
-        def programexit(p):
-            sys.exit(0)
-
         @self.pg.production('expression : ENTER OPEN_PAREN CLOSE_PAREN')
-        def programenter(p):
-            return Input()
+        @self.pg.production('expression : PRINT OPEN_PAREN CLOSE_PAREN')
+        def programfunc0(p):
+            func = p[0]
+            if func.gettokentype() == "EXIT":
+                sys.exit(0)
+            elif func.gettokentype() == "ENTER":
+                i = Input()
+                i.apply()
+                return i
+            else:
+                i = Print()
+                i.apply()
+                return i
 
         @self.pg.production('expression : OPEN_PAREN expression CLOSE_PAREN')
         def expressionparen(p):
@@ -65,10 +110,40 @@ class Parser:
                 value = Nothing()
                 if p[1].gettokentype() == "INCREMENT":
                     value = Increment(var.exp)
-                    var = Variable(p[0].value, value.apply())
-                    self.var.add(var)
                 else:
                     value = Decrement(var.exp)
+                if value.eval() is not None:
+                    var = Variable(p[0].value, value.apply())
+                    self.var.add(var)
+                return value
+            else:
+                print("Variable not declared : \n - Name :", p[0].value)
+                sys.exit(1)
+
+        @self.pg.production('expression : IDENTIFIER SUMAFF expression')
+        @self.pg.production('expression : IDENTIFIER SUBAFF expression')
+        @self.pg.production('expression : IDENTIFIER MULAFF expression')
+        @self.pg.production('expression : IDENTIFIER DIVAFF expression')
+        @self.pg.production('expression : IDENTIFIER MODAFF expression')
+        @self.pg.production('expression : IDENTIFIER POWAFF expression')
+        def affectionop(p):
+            var = self.var.get(p[0].value)
+            op = p[1]
+            if var is not None:
+                value = Nothing()
+                if op.gettokentype() == 'SUMAFF':
+                    value = SumAffector(var.exp, p[2])
+                elif op.gettokentype() == 'SUBAFF':
+                    value = SubAffector(var.exp, p[2])
+                elif op.gettokentype() == 'MULAFF':
+                    value = MulAffector(var.exp, p[2])
+                elif op.gettokentype() == 'MODAFF':
+                    value = ModAffector(var.exp, p[2])
+                elif op.gettokentype() == 'POWAFF':
+                    value = PowAffector(var.exp, p[2])
+                else:
+                    value = DivAffector(var.exp, p[2])
+                if value.eval() is not None:
                     var = Variable(p[0].value, value.apply())
                     self.var.add(var)
                 return value

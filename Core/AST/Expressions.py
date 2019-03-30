@@ -17,6 +17,14 @@ class ExpressionBase(BaseBox):
         if self.kind == "string" and exp.kind == "integer":
             return self.value[:len(self.value)-exp.value]
 
+    def sumaff(self, exp):
+        if self.kind == "string" or exp.kind == "string":
+            self.value = str(self.value) + str(exp.eval())
+
+    def subaff(self, exp):
+        if self.kind == "string" and exp.kind == "integer":
+            self.value = self.value[:len(self.value)-exp.value]
+
     def increment(self):
         if self.kind == "string":
             self.value *= 2

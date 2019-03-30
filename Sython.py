@@ -2,14 +2,18 @@ from Core.lexer import Lexer
 from Core.parser import Parser
 import sys
 
-tokens = ['PRINT', 'EXIT', 'ENTER', 'BOOL', 'FLOAT',
-          'INCREMENT', 'DECREMENT', 'INTEGER',
+tokens = ['PRINT', 'EXIT', 'ENTER', 'INT', 'FLOAT', 'STR',
+          'TYPE', 'BOOLEAN', 'BOOL', 'FLOAT',
+          'INCREMENT', 'DECREMENT', 'INTEGER', 'SUMAFF',
+          'SUBAFF', 'MULAFF', 'DIVAFF', 'MODAFF', 'POWAFF',
           'OPEN_PAREN', 'CLOSE_PAREN', 'SUM',
           'SUB', 'MUL', 'DIV', 'MOD', 'POW', 'EGAL',
           'STRING', 'IDENTIFIER',
           'COMMENT']
-values = [r'show', r'exit', r'enter', r'(true)|(false)', r'-?\d+.\d+',
-          r'\+\+', r'\-\-', r'-?\d+',
+values = [r'show', r'exit', r'enter', r'int', r'float', r'str',
+          r'type', r'bool', r'(true)|(false)', r'-?\d+.\d+',
+          r'\+\+', r'\-\-', r'-?\d+', r'\+\=',
+          r'\-\=', r'\*\=', r'\/\=', r'\%\=', r'\^=',
           r'\(', r'\)', r'\+',
           r'\-', r'\*', r'\/', r'\%', r'\^', r'\=',
           r'(\"([^\\\n]|(\\.))*?\")|(\'([^\\\n]|(\\.))*?\')', r"[a-zA-Z][a-zA-Z0-9]*",

@@ -5,6 +5,7 @@ import sys
 class UniqueOp(BaseBox):
     def __init__(self, exp):
         self.exp = exp
+        
     def eval(self):
         return self.exp.eval()
 
