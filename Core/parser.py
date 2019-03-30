@@ -1,8 +1,9 @@
 from rply import ParserGenerator
 import sys
 
-from Core.AST.AffectionOperators import SumAffector, SubAffector, MulAffector, DivAffector, ModAffector, PowAffector
 from Core.AST.BinaryOperators import Sum, Sub, Mul, Div, Mod, Pow, DivEu
+from Core.AST.AffectionOperators import SumAffector, SubAffector, DivEuAffector, MulAffector, DivAffector,\
+    ModAffector, PowAffector
 from Core.AST.Expressions import ExpressionBase, Nothing
 from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean
 from Core.AST.Variables import Variable, Variables
@@ -17,7 +18,7 @@ class Parser:
             precedence=[
                 ('left', ['EGAL']),
                 ('left', ['SUMAFF', 'SUBAFF']),
-                ('left', ['MULAFF', 'DIVAFF', 'MODAFF']),
+                ('left', ['MULAFF', 'DIVAFF', 'DIVEUAFF', 'MODAFF']),
                 ('left', ['POWAFF']),
                 ('left', ['SUM', 'SUB']),
                 ('left', ['MUL', 'DIV', 'DIVEU', 'MOD']),
@@ -126,6 +127,7 @@ class Parser:
         @self.pg.production('expression : IDENTIFIER DIVAFF expression')
         @self.pg.production('expression : IDENTIFIER MODAFF expression')
         @self.pg.production('expression : IDENTIFIER POWAFF expression')
+        @self.pg.production('expression : IDENTIFIER DIVEUAFF expression')
         def affectionop(p):
             var = self.var.get(p[0].value)
             op = p[1]
@@ -141,6 +143,8 @@ class Parser:
                     value = ModAffector(var.exp, p[2])
                 elif op.gettokentype() == 'POWAFF':
                     value = PowAffector(var.exp, p[2])
+                elif op.gettokentype() == 'DIVEUAFF':
+                    value = DivEuAffector(var.exp, p[2])
                 else:
                     value = DivAffector(var.exp, p[2])
                 if value.eval() is not None:

@@ -29,6 +29,7 @@ dico = {
     'SUBAFF': r'\-\=',
     'MULAFF': r'\*\=',
     'DIVAFF': r'\/\=',
+    'DIVEUAFF': r'\/\/\=',
     'MODAFF': r'\%\=',
     'POWAFF': r'\^\=',
 

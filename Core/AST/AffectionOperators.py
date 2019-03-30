@@ -75,6 +75,22 @@ class DivAffector(AffectionOperator):
                 sys.exit(1)
 
 
+class DivEuAffector(AffectionOperator):
+    def apply(self):
+        try:
+            self.exp.value //= self.right.eval()
+            return self.exp
+        except:
+            try:
+                self.exp.diveuaff(self.right)
+                return self.exp
+            except:
+                print("Operation impossible : \n - Values :", self.exp.eval(), "|", self.right.eval(),
+                      "\n - Types :", self.exp.kind, "|", self.right.kind,
+                      "\n - Operation : Euclidean Division affection")
+                sys.exit(1)
+
+
 class ModAffector(AffectionOperator):
     def apply(self):
         try:
