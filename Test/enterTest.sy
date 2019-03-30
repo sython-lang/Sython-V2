@@ -1,0 +1,3 @@
+nom = enter("Entre ton nom : ")
+age = enter("Entre ton age : ")
+show("Vous etes " + nom + " et vous avez " + age + " ans.")
