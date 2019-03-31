@@ -30,15 +30,27 @@ class Parser:
         self.var = Variables()
 
     def parse(self):
-        @self.pg.production('program : expression')
+        @self.pg.production('program : statementlist')
+        def program(p):
+            return p[0]
+
+        @self.pg.production('statementlist : statementlist NEWLINE statement')
+        def programsl(p):
+            return p[2]
+
+        @self.pg.production('statementlist : statement')
+        def programs(p):
+            return p[0]
+
+        @self.pg.production('statement : expression')
         def programexp(p):
             return p[0]
 
-        @self.pg.production('program : expression COMMENT')
+        @self.pg.production('statement : expression COMMENT')
         def programexpcomment(p):
             return p[0]
 
-        @self.pg.production('program : COMMENT')
+        @self.pg.production('statement : COMMENT')
         def programcomment(p):
             return Nothing()
 

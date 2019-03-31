@@ -11,7 +11,8 @@ class Lexer:
         for i in range(len(self.tokens)):
             self.lexer.add(self.tokens[i], self.values[i])
         # Ignore spaces
-        self.lexer.ignore('\s+')
+        self.lexer.ignore('\t+')
+        self.lexer.ignore(r' +')
 
     def get_lexer(self):
         self._add_tokens()

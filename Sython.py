@@ -5,6 +5,7 @@ import sys
 dico = {
     # Comments
     'COMMENT': r'#.*',
+    'NEWLINE': r'\n+',
 
     # Types
     'STRING': r'(\"([^\\\n]|(\\.))*?\")|(\'([^\\\n]|(\\.))*?\')',
@@ -72,11 +73,10 @@ parser = pg.get_parser()
 if len(sys.argv) >= 2:
     try:
         with open(sys.argv[1]) as f:
-            text_input = f.readlines()
-            for i in text_input:
-                if i != "":
-                    tokens = lexer.lex(i)
-                    parser.parse(tokens).eval()
+            text_input = f.read()
+            tokens = lexer.lex(text_input)
+            # print(list(tokens))  # ONLY TO DEBUG : This function shows tokens (make crash the program)
+            parser.parse(tokens).eval()
     except IOError:
         pass
 else:
@@ -84,7 +84,7 @@ else:
     while launched:
         text_input = input(">>> ")
         tokens = lexer.lex(text_input)
-        # print(list(tokens)) # ONLY TO DEBUG : This function shows tokens (make crash the program)
+        # print(list(tokens))  # ONLY TO DEBUG : This function shows tokens (make crash the program)
         result = parser.parse(tokens).eval()
         if result is not None:
             print(result)
