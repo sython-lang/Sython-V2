@@ -9,6 +9,7 @@ from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean
 from Core.AST.Variables import Variable, Variables
 from Core.AST.UniqueOperators import Increment, Decrement
 from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
+from Core.AST.Conditions import If
 
 
 class Parser:
@@ -52,6 +53,22 @@ class Parser:
         def statement(p):
             return None
 
+        @self.pg.production('statement : IF expression OPEN_CRO expression CLOSE_CRO')
+        @self.pg.production('statement : IF expression OPEN_CRO expression NEWLINE CLOSE_CRO')
+        def ifexp(p):
+            return If(p[1], p[3]).eval()
+
+        @self.pg.production('statement : IF expression OPEN_CRO NEWLINE expression NEWLINE CLOSE_CRO')
+        @self.pg.production('statement : IF expression OPEN_CRO NEWLINE expression CLOSE_CRO')
+        @self.pg.production('statement : IF expression NEWLINE OPEN_CRO expression NEWLINE CLOSE_CRO')
+        @self.pg.production('statement : IF expression NEWLINE OPEN_CRO expression CLOSE_CRO')
+        def ifexp2(p):
+            return If(p[1], p[4]).eval()
+
+        @self.pg.production('statement : IF expression NEWLINE OPEN_CRO NEWLINE expression NEWLINE CLOSE_CRO')
+        @self.pg.production('statement : IF expression NEWLINE OPEN_CRO NEWLINE expression CLOSE_CRO')
+        def ifexp2(p):
+            return If(p[1], p[5]).eval()
 
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):

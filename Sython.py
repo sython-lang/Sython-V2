@@ -13,6 +13,13 @@ dico = {
     'FLOAT': r'-?\d+.\d+',
     'INTEGER': r'-?\d+',
 
+    # Conditions
+    'ELSEIF': r'else if',
+    'IF': r'if',
+    'OPEN_CRO': r'\{',
+    'CLOSE_CRO': r'\}',
+    'ELSE': r'else',
+
     # Functions
     'PRINT': r'show',
     'EXIT': r'exit',

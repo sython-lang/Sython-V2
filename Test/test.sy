@@ -10,3 +10,28 @@ show(a)
 show(a + 2)
 show("TEST" + a)
 
+if a == 3 { show(a) }
+
+if a == 3 { show(a)
+}
+
+if a == 3 {
+    show(a)
+}
+
+if a == 3 {
+    show(a)}
+
+if a == 3
+{show(a)
+}
+if a == 3
+{show(a)}
+
+if a == 3
+{
+    show(a)
+}
+if a == 3
+{
+    show(a)}
