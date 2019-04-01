@@ -1,4 +1,5 @@
 from rply.token import BaseBox
+from Core.AST.Expressions import ExpressionBase
 
 
 class Variables(BaseBox):
@@ -7,7 +8,7 @@ class Variables(BaseBox):
 
     def add(self, var):
         if self.get(var.name) is not None:
-            self.set(var.name, var.exp)
+            self.set(var.name, var.value)
         else:
             self.vars.append(var)
 
@@ -20,13 +21,14 @@ class Variables(BaseBox):
     def set(self, nom, exp):
         var = self.get(nom)
         if var is not None:
-            var.exp = exp
+            var.value = exp
 
 
 class Variable(BaseBox):
-    def __init__(self, name, exp):
+    def __init__(self, name, value, kind):
         self.name = name
-        self.exp = exp
+        self.value = value
+        self.kind = kind
 
     def eval(self):
-        self.exp.eval()
+        return ExpressionBase(self.value, self.kind)

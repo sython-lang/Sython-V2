@@ -6,20 +6,21 @@ class AffectionOperator(BaseBox):
     def __init__(self, exp, right):
         self.exp = exp
         self.right = right
-
-    def eval(self):
-        return self.exp.eval()
+        if self.right.kind == "string" or self.exp.kind == "string":
+            self.kind = "string"
+        else:
+            self.kind = self.exp.kind
 
 
 class SumAffector(AffectionOperator):
-    def apply(self):
+    def eval(self):
         try:
             self.exp.value += self.right.eval()
-            return self.exp
+            return self.exp.value
         except:
             try:
                 self.exp.sumaff(self.right)
-                return self.exp
+                return self.exp.value
             except:
                 print("Operation impossible : \n - Values :", self.exp.eval(), "|", self.right.eval(),
                       "\n - Types :", self.exp.kind, "|", self.right.kind,
@@ -28,14 +29,14 @@ class SumAffector(AffectionOperator):
 
 
 class SubAffector(AffectionOperator):
-    def apply(self):
+    def eval(self):
         try:
             self.exp.value -= self.right.eval()
-            return self.exp
+            return self.exp.value
         except:
             try:
                 self.exp.subaff(self.right)
-                return self.exp
+                return self.exp.value
             except:
                 print("Operation impossible : \n - Values :", self.exp.eval(), "|", self.right.eval(),
                       "\n - Types :", self.exp.kind, "|", self.right.kind,
@@ -44,14 +45,14 @@ class SubAffector(AffectionOperator):
 
 
 class MulAffector(AffectionOperator):
-    def apply(self):
+    def eval(self):
         try:
             self.exp.value *= self.right.eval()
-            return self.exp
+            return self.exp.value
         except:
             try:
                 self.exp.mulaff(self.right)
-                return self.exp
+                return self.exp.value
             except:
                 print("Operation impossible : \n - Values :", self.exp.eval(), "|", self.right.eval(),
                       "\n - Types :", self.exp.kind, "|", self.right.kind,
@@ -60,14 +61,14 @@ class MulAffector(AffectionOperator):
 
 
 class DivAffector(AffectionOperator):
-    def apply(self):
+    def eval(self):
         try:
             self.exp.value /= self.right.eval()
-            return self.exp
+            return self.exp.value
         except:
             try:
                 self.exp.divaff(self.right)
-                return self.exp
+                return self.exp.value
             except:
                 print("Operation impossible : \n - Values :", self.exp.eval(), "|", self.right.eval(),
                       "\n - Types :", self.exp.kind, "|", self.right.kind,
@@ -76,14 +77,14 @@ class DivAffector(AffectionOperator):
 
 
 class DivEuAffector(AffectionOperator):
-    def apply(self):
+    def eval(self):
         try:
             self.exp.value //= self.right.eval()
-            return self.exp
+            return self.exp.value
         except:
             try:
                 self.exp.diveuaff(self.right)
-                return self.exp
+                return self.exp.value
             except:
                 print("Operation impossible : \n - Values :", self.exp.eval(), "|", self.right.eval(),
                       "\n - Types :", self.exp.kind, "|", self.right.kind,
@@ -92,14 +93,14 @@ class DivEuAffector(AffectionOperator):
 
 
 class ModAffector(AffectionOperator):
-    def apply(self):
+    def eval(self):
         try:
             self.exp.value %= self.right.eval()
-            return self.exp
+            return self.exp.value
         except:
             try:
                 self.exp.modaff(self.right)
-                return self.exp
+                return self.exp.value
             except:
                 print("Operation impossible : \n - Values :", self.exp.eval(), "|", self.right.eval(),
                       "\n - Types :", self.exp.kind, "|", self.right.kind,
@@ -108,14 +109,14 @@ class ModAffector(AffectionOperator):
 
 
 class PowAffector(AffectionOperator):
-    def apply(self):
+    def eval(self):
         try:
             self.exp.value **= self.right.eval()
-            return self.exp
+            return self.exp.value
         except:
             try:
                 self.exp.powaff(self.right)
-                return self.exp
+                return self.exp.value
             except:
                 print("Operation impossible : \n - Values :", self.exp.eval(), "|", self.right.eval(),
                       "\n - Types :", self.exp.kind, "|", self.right.kind,

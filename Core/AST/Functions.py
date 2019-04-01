@@ -8,100 +8,78 @@ class Print(BaseBox):
         self.value = value
         self.kind = "string"
 
-    def apply(self):
-        print(self.value.eval())
-
     def eval(self):
+        print(self.value.eval())
         return self.value.eval()
 
 
 class Input(BaseBox):
     def __init__(self, text=""):
         self.text = text
-        self.value = ""
         self.kind = "string"
 
-    def apply(self):
-        self.value = input(self.text[1:-1])
-
     def eval(self):
-        return self.value
+        return input(self.text[1:-1])
 
 
 class Int(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.value = 0
         self.kind = "integer"
 
-    def apply(self):
+    def eval(self):
         try:
-            self.value = int(self.exp.eval())
+            return int(self.exp.eval())
         except:
             print("Operation impossible : \n - Value :", self.exp.eval(),
                   "\n - Type :", self.exp.kind,
                   "\n - Operation : Become Integer")
             sys.exit(1)
 
-    def eval(self):
-        return self.value
-
 
 class Float(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.value = 0.0
         self.kind = "float"
 
-    def apply(self):
+    def eval(self):
         try:
-            self.value = float(self.exp.eval())
+            return float(self.exp.eval())
         except:
             print("Operation impossible : \n - Value :", self.exp.eval(),
                   "\n - Type :", self.exp.kind,
                   "\n - Operation : Become Float")
             sys.exit(1)
 
-    def eval(self):
-        return self.value
-
 
 class Str(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.value = ""
         self.kind = "string"
 
-    def apply(self):
+    def eval(self):
         try:
-            self.value = str(self.exp.eval())
+            return str(self.exp.eval())
         except:
             print("Operation impossible : \n - Value :", self.exp.eval(),
                   "\n - Type :", self.exp.kind,
                   "\n - Operation : Become String")
             sys.exit(1)
 
-    def eval(self):
-        return self.value
-
 
 class Boolean(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.value = True
         self.kind = "boolean"
 
-    def apply(self):
+    def eval(self):
         try:
-            self.value = bool(self.exp.eval())
+            return bool(self.exp.eval())
         except:
             print("Operation impossible : \n - Value :", self.exp.eval(),
                   "\n - Type :", self.exp.kind,
                   "\n - Operation : Become Float")
             sys.exit(1)
-
-    def eval(self):
-        return self.value
 
 
 class Type(BaseBox):

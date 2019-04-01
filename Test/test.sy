@@ -1,2 +1,12 @@
-a = 1
+a = enter("test :")
+show("OUI")
 show(a)
+a = int(a)
+show(a)
+a ++
+show(a)
+a += 1
+show(a)
+show(a + 2)
+show("TEST" + a)
+

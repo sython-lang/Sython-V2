@@ -75,8 +75,9 @@ if len(sys.argv) >= 2:
         with open(sys.argv[1]) as f:
             text_input = f.read()
             tokens = lexer.lex(text_input)
-            # print(list(tokens))  # ONLY TO DEBUG : This function shows tokens (make crash the program)
-            parser.parse(tokens).eval()
+            # b = lexer.lex(text_input) # ONLY TO DEBUG
+            # print(list(b))  # ONLY TO DEBUG
+            parser.parse(tokens)
     except IOError:
         pass
 else:
@@ -84,7 +85,8 @@ else:
     while launched:
         text_input = input(">>> ")
         tokens = lexer.lex(text_input)
-        # print(list(tokens))  # ONLY TO DEBUG : This function shows tokens (make crash the program)
-        result = parser.parse(tokens).eval()
+        # b = lexer.lex(text_input) # ONLY TO DEBUG
+        # print(list(b))  # ONLY TO DEBUG
+        result = parser.parse(tokens)
         if result is not None:
             print(result)

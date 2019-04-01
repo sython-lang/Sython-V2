@@ -6,6 +6,10 @@ class BinaryOp(BaseBox):
     def __init__(self, left, right):
         self.left = left
         self.right = right
+        if self.right.kind == "string" or self.left.kind == "string":
+            self.kind = "string"
+        else:
+            self.kind = self.left.kind
 
 
 class Sum(BinaryOp):

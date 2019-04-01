@@ -3,40 +3,37 @@ import sys
 
 
 class UniqueOp(BaseBox):
-    def __init__(self, exp):
-        self.exp = exp
-        
-    def eval(self):
-        return self.exp.eval()
+    def __init__(self, var):
+        self.var = var
 
 
 class Increment(UniqueOp):
-    def apply(self):
+    def eval(self):
         try:
-            self.exp.value += 1
-            return self.exp
+            self.var.value += 1
+            return self.var.value
         except:
             try:
-                self.exp.increment()
-                return self.exp
+                self.var.increment()
+                return self.var.value
             except:
-                print("Operation impossible : \n - Value :", self.exp.eval(),
-                      "\n - Type :", self.exp.kind,
+                print("Operation impossible : \n - Value :", self.var.eval(),
+                      "\n - Type :", self.var.kind,
                       "\n - Operation : Increase")
                 sys.exit(1)
 
 
 class Decrement(UniqueOp):
-    def apply(self):
+    def eval(self):
         try:
-            self.exp.value -= 1
-            return self.exp
+            self.var.value -= 1
+            return self.var.value
         except:
             try:
-                self.exp.decrement()
-                return self.exp
+                self.var.decrement()
+                return self.var.value
             except:
-                print("Operation impossible : \n - Value :", self.exp.eval(),
-                      "\n - Type :", self.exp.kind,
+                print("Operation impossible : \n - Value :", self.var.eval(),
+                      "\n - Type :", self.var.kind,
                       "\n - Operation : Decrease")
                 sys.exit(1)

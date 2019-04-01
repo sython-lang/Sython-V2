@@ -1,6 +1,4 @@
 from rply.token import BaseBox
-from Core.AST.Expressions import ExpressionBase
-import sys
 
 
 class Comparators(BaseBox):
@@ -9,45 +7,42 @@ class Comparators(BaseBox):
         self.right = right
         self.value = False
 
-    def eval(self):
-        return ExpressionBase(self.value, "boolean")
-
 
 class Egal(Comparators):
-    def apply(self):
+    def eval(self):
         if self.left.eval() == self.right.eval():
-            self.value = True
+            return True
         else:
-            self.value = False
+            return False
 
 
 class Less(Comparators):
-    def apply(self):
+    def eval(self):
         if self.left.eval() < self.right.eval():
-            self.value = True
+            return True
         else:
-            self.value = False
+            return False
 
 
 class More(Comparators):
-    def apply(self):
+    def eval(self):
         if self.left.eval() > self.right.eval():
-            self.value = True
+            return True
         else:
-            self.value = False
+            return False
 
 
 class LessOrEgal(Comparators):
-    def apply(self):
+    def eval(self):
         if self.left.eval() <= self.right.eval():
-            self.value = True
+            return True
         else:
-            self.value = False
+            return False
 
 
 class MoreOrEgal(Comparators):
-    def apply(self):
+    def eval(self):
         if self.left.eval() >= self.right.eval():
-            self.value = True
+            return True
         else:
-            self.value = False
+            return False

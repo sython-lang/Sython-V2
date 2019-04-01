@@ -35,30 +35,29 @@ class Parser:
             return p[0]
 
         @self.pg.production('statementlist : statementlist NEWLINE statement')
-        def programsl(p):
+        def statementlistexp(p):
             return p[2]
 
         @self.pg.production('statementlist : statement')
-        def programs(p):
-            return p[0]
-
-        @self.pg.production('statement : expression')
-        def programexp(p):
+        @self.pg.production('statementlist : statementlist NEWLINE')
+        def statementlist(p):
             return p[0]
 
         @self.pg.production('statement : expression COMMENT')
-        def programexpcomment(p):
-            return p[0]
+        @self.pg.production('statement : expression')
+        def statement(p):
+            return p[0].eval()
 
         @self.pg.production('statement : COMMENT')
-        def programcomment(p):
-            return Nothing()
+        def statement(p):
+            return None
+
 
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):
-            var = Variable(p[0].value, p[2])
+            var = Variable(p[0].value, p[2].eval(), p[2].kind)
             self.var.add(var)
-            return p[2]
+            return ExpressionBase(var.eval(), p[2].kind)
 
         @self.pg.production('expression : INT OPEN_PAREN expression CLOSE_PAREN')
         @self.pg.production('expression : FLOATF OPEN_PAREN expression CLOSE_PAREN')
@@ -71,21 +70,19 @@ class Parser:
             func = p[0]
             exp = p[2]
             if func.gettokentype() == "INT":
-                i = Int(exp)
+                return Int(exp)
             elif func.gettokentype() == "FLOATF":
-                i = Float(exp)
+                return Float(exp)
             elif func.gettokentype() == "BOOL":
-                i = Boolean(exp)
+                return Boolean(exp)
             elif func.gettokentype() == "STR":
-                i = Str(exp)
+                return Str(exp)
             elif func.gettokentype() == "TYPE":
                 return Type(exp)
             elif func.gettokentype() == "PRINT":
-                i = Print(exp)
+                return Print(exp)
             else:
-                i = Input(exp.value)
-            i.apply()
-            return i
+                return Input(exp.value)
 
         @self.pg.production('expression : EXIT OPEN_PAREN CLOSE_PAREN')
         @self.pg.production('expression : ENTER OPEN_PAREN CLOSE_PAREN')
@@ -95,13 +92,9 @@ class Parser:
             if func.gettokentype() == "EXIT":
                 sys.exit(0)
             elif func.gettokentype() == "ENTER":
-                i = Input()
-                i.apply()
-                return i
+                return Input()
             else:
-                i = Print()
-                i.apply()
-                return i
+                return Print()
 
         @self.pg.production('expression : OPEN_PAREN expression CLOSE_PAREN')
         def expressionparen(p):
@@ -112,15 +105,16 @@ class Parser:
         def uniqueop(p):
             var = self.var.get(p[0].value)
             if var is not None:
-                value = Nothing()
                 if p[1].gettokentype() == "INCREMENT":
-                    value = Increment(var.exp)
+                    value = Increment(ExpressionBase(var.value, var.kind))
                 else:
-                    value = Decrement(var.exp)
-                if value.eval() is not None:
-                    var = Variable(p[0].value, value.apply())
+                    value = Decrement(ExpressionBase(var.value, var.kind))
+                value = value.eval()
+                if value is not None:
+                    var = Variable(p[0].value, value, var.kind)
                     self.var.add(var)
-                return value
+                    return var
+                return Nothing()
             else:
                 print("Variable not declared : \n - Name :", p[0].value)
                 sys.exit(1)
@@ -136,25 +130,26 @@ class Parser:
             var = self.var.get(p[0].value)
             op = p[1]
             if var is not None:
-                value = Nothing()
                 if op.gettokentype() == 'SUMAFF':
-                    value = SumAffector(var.exp, p[2])
+                    value = SumAffector(ExpressionBase(var.value, var.kind), p[2])
                 elif op.gettokentype() == 'SUBAFF':
-                    value = SubAffector(var.exp, p[2])
+                    value = SubAffector(ExpressionBase(var.value, var.kind), p[2])
                 elif op.gettokentype() == 'MULAFF':
-                    value = MulAffector(var.exp, p[2])
+                    value = MulAffector(ExpressionBase(var.value, var.kind), p[2])
                 elif op.gettokentype() == 'MODAFF':
-                    value = ModAffector(var.exp, p[2])
+                    value = ModAffector(ExpressionBase(var.value, var.kind), p[2])
                 elif op.gettokentype() == 'POWAFF':
-                    value = PowAffector(var.exp, p[2])
+                    value = PowAffector(ExpressionBase(var.value, var.kind), p[2])
                 elif op.gettokentype() == 'DIVEUAFF':
-                    value = DivEuAffector(var.exp, p[2])
+                    value = DivEuAffector(ExpressionBase(var.value, var.kind), p[2])
                 else:
-                    value = DivAffector(var.exp, p[2])
-                if value.eval() is not None:
-                    var = Variable(p[0].value, value.apply())
+                    value = DivAffector(ExpressionBase(var.value, var.kind), p[2])
+                value = value.eval()
+                if value is not None:
+                    var = Variable(p[0].value, value, var.kind)
                     self.var.add(var)
-                return value
+                    return var
+                return Nothing()
             else:
                 print("Variable not declared : \n - Name :", p[0].value)
                 sys.exit(1)
@@ -204,8 +199,7 @@ class Parser:
                 i = LessOrEgal(e1, e2)
             else:
                 i = MoreOrEgal(e1, e2)
-            i.apply()
-            return i.eval()
+            return ExpressionBase(i.eval(), "boolean")
 
         @self.pg.production('expression : SUB expression')
         @self.pg.production('expression : SUM expression')
@@ -221,6 +215,7 @@ class Parser:
         @self.pg.production('expression : FLOAT')
         @self.pg.production('expression : STRING')
         @self.pg.production('expression : BOOLEAN')
+        @self.pg.production('expression : IDENTIFIER')
         def expression(p):
             if p[0].gettokentype() == 'FLOAT':
                 return ExpressionBase(float(p[0].value), "float")
@@ -230,17 +225,15 @@ class Parser:
                 if p[0].value == "false":
                     return ExpressionBase(False, "boolean")
                 return ExpressionBase(True, "boolean")
+            elif p[0].gettokentype() == 'IDENTIFIER':
+                var = self.var.get(p[0].value)
+                if var is not None:
+                    return var.eval()
+                else:
+                    print("Variable not declared : \n - Name :", p[0].value)
+                    sys.exit(1)
             else:
                 return ExpressionBase(int(p[0].value), "integer")
-
-        @self.pg.production('expression : IDENTIFIER')
-        def variable(p):
-            var = self.var.get(p[0].value)
-            if var is not None:
-                return var.exp
-            else:
-                print("Variable not declared : \n - Name :", p[0].value)
-                sys.exit(1)
 
         @self.pg.error
         def error_handle(token):
