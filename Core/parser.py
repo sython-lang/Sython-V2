@@ -9,7 +9,8 @@ from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean
 from Core.AST.Variables import Variable, Variables
 from Core.AST.UniqueOperators import Increment, Decrement
 from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
-from Core.AST.Conditions import If
+from Core.AST.Conditions import If, IfElse, Else
+from Core.AST.Statements import Statement, StatementList
 
 
 class Parser:
@@ -33,42 +34,56 @@ class Parser:
     def parse(self):
         @self.pg.production('program : statementlist')
         def program(p):
-            return p[0]
+            return p[0].eval()
 
         @self.pg.production('statementlist : statementlist NEWLINE statement')
+        @self.pg.production('statementlist : statementlist NEWLINE if_statement')
+        @self.pg.production('statementlist : statementlist NEWLINE ifelse_statement')
         def statementlistexp(p):
-            return p[2]
+            return StatementList(p[2], p[0])
 
         @self.pg.production('statementlist : statement')
+        @self.pg.production('statementlist : if_statement')
+        @self.pg.production('statementlist : ifelse_statement')
         @self.pg.production('statementlist : statementlist NEWLINE')
         def statementlist(p):
-            return p[0]
+            if p[0].gettokentype() == 'statement':
+                return StatementList(p[0])
+            else:
+                return StatementList(None, p[0])
+
+        @self.pg.production('ifelse_statement : if_statement else_statement')
+        def ifelse(p):
+            return IfElse(p[0], p[1])
+
+        @self.pg.production('ifelse_statement : if_statement NEWLINE else_statement')
+        def ifelse2(p):
+            return IfElse(p[0], p[2])
+
+        @self.pg.production('if_statement : IF expression OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        def ifexp(p):
+            return If(p[1], p[4])
+
+        @self.pg.production('if_statement : IF expression NEWLINE OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        def ifexp2(p):
+            return If(p[1], p[5])
+
+        @self.pg.production('else_statement : ELSE OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        def elseexp(p):
+            return Else(p[3])
+
+        @self.pg.production('else_statement : ELSE NEWLINE OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        def elseexp3(p):
+            return Else(p[4])
 
         @self.pg.production('statement : expression COMMENT')
         @self.pg.production('statement : expression')
         def statement(p):
-            return p[0].eval()
+            return Statement(p[0])
 
         @self.pg.production('statement : COMMENT')
         def statement(p):
             return None
-
-        @self.pg.production('statement : IF expression OPEN_CRO expression CLOSE_CRO')
-        @self.pg.production('statement : IF expression OPEN_CRO expression NEWLINE CLOSE_CRO')
-        def ifexp(p):
-            return If(p[1], p[3]).eval()
-
-        @self.pg.production('statement : IF expression OPEN_CRO NEWLINE expression NEWLINE CLOSE_CRO')
-        @self.pg.production('statement : IF expression OPEN_CRO NEWLINE expression CLOSE_CRO')
-        @self.pg.production('statement : IF expression NEWLINE OPEN_CRO expression NEWLINE CLOSE_CRO')
-        @self.pg.production('statement : IF expression NEWLINE OPEN_CRO expression CLOSE_CRO')
-        def ifexp2(p):
-            return If(p[1], p[4]).eval()
-
-        @self.pg.production('statement : IF expression NEWLINE OPEN_CRO NEWLINE expression NEWLINE CLOSE_CRO')
-        @self.pg.production('statement : IF expression NEWLINE OPEN_CRO NEWLINE expression CLOSE_CRO')
-        def ifexp2(p):
-            return If(p[1], p[5]).eval()
 
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):

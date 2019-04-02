@@ -1,6 +1,7 @@
 from Core.lexer import Lexer
 from Core.parser import Parser
 import sys
+from Core.debug import debug  # ONLY FOR DEBUG
 
 dico = {
     # Comments
@@ -14,7 +15,6 @@ dico = {
     'INTEGER': r'-?\d+',
 
     # Conditions
-    'ELSEIF': r'else if',
     'IF': r'if',
     'OPEN_CRO': r'\{',
     'CLOSE_CRO': r'\}',
@@ -82,8 +82,7 @@ if len(sys.argv) >= 2:
         with open(sys.argv[1]) as f:
             text_input = f.read()
             tokens = lexer.lex(text_input)
-            # b = lexer.lex(text_input) # ONLY TO DEBUG
-            # print(list(b))  # ONLY TO DEBUG
+            debug(lexer, text_input)  # ONLY FOR DEBUG
             parser.parse(tokens)
     except IOError:
         pass
@@ -92,8 +91,7 @@ else:
     while launched:
         text_input = input(">>> ")
         tokens = lexer.lex(text_input)
-        # b = lexer.lex(text_input) # ONLY TO DEBUG
-        # print(list(b))  # ONLY TO DEBUG
+        # debug(lexer, text_input)  # ONLY FOR DEBUG
         result = parser.parse(tokens)
         if result is not None:
             print(result)

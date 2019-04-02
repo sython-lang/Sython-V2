@@ -1,37 +1,8 @@
-a = enter("test :")
-show("OUI")
-show(a)
+a = enter("Votre age : ")
 a = int(a)
-show(a)
-a ++
-show(a)
-a += 1
-show(a)
-show(a + 2)
-show("TEST" + a)
-
-if a == 3 { show(a) }
-
-if a == 3 { show(a)
-}
-
-if a == 3 {
-    show(a)
-}
-
-if a == 3 {
-    show(a)}
-
-if a == 3
-{show(a)
-}
-if a == 3
-{show(a)}
-
-if a == 3
+if a >= 18
 {
-    show(a)
+    show("Vous etes majeur")
 }
-if a == 3
-{
-    show(a)}
+
+show(a)
