@@ -19,6 +19,7 @@ class Parser:
             # A list of all token names accepted by the parser.
             tokens,
             precedence=[
+                ('left', ['NEWLINE']),
                 ('left', ['EGAL']),
                 ('left', ['IS', 'LESS', 'MORE', 'LESSE', 'MOREE']),
                 ('left', ['SUMAFF', 'SUBAFF']),
@@ -52,14 +53,6 @@ class Parser:
             else:
                 return StatementList(None, p[0])
 
-        @self.pg.production('ifelse_statement : if_statement else_statement')
-        def ifelse(p):
-            return IfElse(p[0], p[1])
-
-        @self.pg.production('ifelse_statement : if_statement NEWLINE else_statement')
-        def ifelse2(p):
-            return IfElse(p[0], p[2])
-
         @self.pg.production('if_statement : IF expression OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
         def ifexp(p):
             return If(p[1], p[4])
@@ -75,6 +68,14 @@ class Parser:
         @self.pg.production('else_statement : ELSE NEWLINE OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
         def elseexp3(p):
             return Else(p[4])
+
+        @self.pg.production('ifelse_statement : if_statement else_statement')
+        def ifelse(p):
+            return IfElse(p[0], p[1])
+
+        # @self.pg.production('ifelse_statement : if_statement NEWLINE else_statement')
+        # def ifelse2(p):
+        #     return IfElse(p[0], p[2])
 
         @self.pg.production('statement : expression COMMENT')
         @self.pg.production('statement : expression')

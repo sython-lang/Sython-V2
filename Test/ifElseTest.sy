@@ -1,0 +1,9 @@
+a = enter("Votre age : ")
+a = int(a)
+if a >= 18
+{
+    show("Vous etes majeur")
+}else
+{
+    show("Vous etes mineur")
+}
