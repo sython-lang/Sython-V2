@@ -10,6 +10,7 @@ from Core.AST.Variables import Variable, Variables
 from Core.AST.UniqueOperators import Increment, Decrement
 from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
 from Core.AST.Conditions import If, IfElse, Else
+from Core.AST.LogicOperators import And, Or, Not
 from Core.AST.Statements import Statement, StatementList
 
 
@@ -21,6 +22,7 @@ class Parser:
             precedence=[
                 ('left', ['NEWLINE']),
                 ('left', ['EGAL']),
+                ('left', ['AND', 'OR', 'NOT']),
                 ('left', ['IS', 'LESS', 'MORE', 'LESSE', 'MOREE']),
                 ('left', ['SUMAFF', 'SUBAFF']),
                 ('left', ['MULAFF', 'DIVAFF', 'DIVEUAFF', 'MODAFF']),
@@ -213,6 +215,22 @@ class Parser:
             else:
                 return Div(left, right)
 
+        @self.pg.production('expression : expression AND expression')
+        @self.pg.production('expression : expression OR expression')
+        def logicoperators2(p):
+            op = p[1]
+            e1 = p[0]
+            e2 = p[2]
+            if op.gettokentype() == "AND":
+                i = And(e1, e2)
+            else:
+                i = Or(e1, e2)
+            return ExpressionBase(i.eval(), "boolean")
+
+        @self.pg.production('expression : NOT expression')
+        def logicoperator1(p):
+            return ExpressionBase(Not(p[1]).eval(), "boolean")
+
         @self.pg.production('expression : expression IS expression')
         @self.pg.production('expression : expression LESS expression')
         @self.pg.production('expression : expression LESSE expression')
@@ -276,4 +294,6 @@ class Parser:
             sys.exit(1)
 
     def get_parser(self):
-        return self.pg.build()
+        parser = self.pg.build()
+        # print(parser.lr_table.sr_conflicts)  # ONLY FOR DEBUG
+        return parser

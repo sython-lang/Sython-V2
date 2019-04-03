@@ -1,5 +1,7 @@
-a = int(enter("Votre age : "))
-b = int(enter("L'age de votre soeur : "))
+a = enter("Votre age : ")
+a = int(a)
+b = enter("L'age de votre soeur : ")
+b = int(b)
 if a >= 18 and b >= 18
 {
     show("Vous etes tous les deux majeurs.")
