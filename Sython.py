@@ -82,7 +82,7 @@ if len(sys.argv) >= 2:
         with open(sys.argv[1]) as f:
             text_input = f.read()
             tokens = lexer.lex(text_input)
-            debug(lexer, text_input)  # ONLY FOR DEBUG
+            # debug(lexer, text_input)  # ONLY FOR DEBUG
             parser.parse(tokens)
     except IOError:
         pass
