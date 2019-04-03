@@ -24,8 +24,8 @@ class StatementList(BaseBox):
 
     def eval(self):
         value = None
-        print(self.statements)
         for i in self.statements:
+            # print(i)  # ONLY FOR DEBUG
             i.eval()
         return value
 
