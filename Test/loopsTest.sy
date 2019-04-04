@@ -1,0 +1,11 @@
+a = int(enter("Entrez un nombre :"))
+loop 5
+{
+    show(a)
+}
+
+while a < 10
+{
+    a++
+    show(a)
+}

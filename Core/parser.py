@@ -12,6 +12,7 @@ from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
 from Core.AST.Conditions import If, IfElse, Else
 from Core.AST.LogicOperators import And, Or, Not
 from Core.AST.Statements import Statement, StatementList
+from Core.AST.Loops import Loop, While
 
 
 class Parser:
@@ -40,14 +41,12 @@ class Parser:
             return p[0].eval()
 
         @self.pg.production('statementlist : statementlist NEWLINE statement')
-        @self.pg.production('statementlist : statementlist NEWLINE if_statement')
-        @self.pg.production('statementlist : statementlist NEWLINE ifelse_statement')
+        @self.pg.production('statementlist : statementlist NEWLINE other_statement')
         def statementlistexp(p):
             return StatementList(p[2], p[0])
 
         @self.pg.production('statementlist : statement')
-        @self.pg.production('statementlist : if_statement')
-        @self.pg.production('statementlist : ifelse_statement')
+        @self.pg.production('statementlist : other_statement')
         @self.pg.production('statementlist : statementlist NEWLINE')
         def statementlist(p):
             if p[0].gettokentype() == 'statement':
@@ -55,11 +54,28 @@ class Parser:
             else:
                 return StatementList(None, p[0])
 
-        @self.pg.production('if_statement : IF expression OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        @self.pg.production('other_statement : LOOP INTEGER OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        def loop(p):
+            return Loop(int(p[1].value), p[4])
+
+        @self.pg.production('other_statement : LOOP INTEGER NEWLINE OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        def loop2(p):
+            return Loop(int(p[1].value), p[5])
+
+        @self.pg.production('other_statement : WHILE expression OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        def whileexp(p):
+            return While(p[1], p[4])
+
+        @self.pg.production('other_statement : WHILE expression NEWLINE OPEN_CRO NEWLINE statementlist NEWLINE '
+                            'CLOSE_CRO')
+        def whileexp2(p):
+            return While(p[1], p[5])
+
+        @self.pg.production('other_statement : IF expression OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
         def ifexp(p):
             return If(p[1], p[4])
 
-        @self.pg.production('if_statement : IF expression NEWLINE OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
+        @self.pg.production('other_statement : IF expression NEWLINE OPEN_CRO NEWLINE statementlist NEWLINE CLOSE_CRO')
         def ifexp2(p):
             return If(p[1], p[5])
 
@@ -71,8 +87,11 @@ class Parser:
         def elseexp3(p):
             return Else(p[4])
 
-        @self.pg.production('ifelse_statement : if_statement else_statement')
+        @self.pg.production('other_statement : other_statement else_statement')
         def ifelse(p):
+            if type(p[0]) == IfElse:
+                print("Alone Else.")
+                sys.exit(1)
             return IfElse(p[0], p[1])
 
         # @self.pg.production('ifelse_statement : if_statement NEWLINE else_statement')

@@ -20,6 +20,10 @@ dico = {
     'CLOSE_CRO': r'\}',
     'ELSE': r'else',
 
+    # Boucles
+    'LOOP': r'loop',
+    'WHILE': r'while',
+
     # Operators Logic
     'AND': r'(and)|(&&)',
     'OR': r'(or)|(\|\|)',
