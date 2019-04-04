@@ -1,0 +1,12 @@
+a = enter("Votre age : ")
+show(a)
+if canbe(a, "int")
+{
+    a = int(a)
+    a += 10
+    a ++
+    show("Dans 11 ans, vous aurez "+a+" ans")
+}else
+{
+    show("ERREUR : '"+a+"' n'est pas un nombre.")
+}

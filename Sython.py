@@ -34,6 +34,8 @@ dico = {
     'STR': r'str',
     'TYPE': r'type',
     'BOOL': r'boolean',
+    'CANBE': r'canbe',
+    'VIRGULE': r',',
 
     # Comparators
     'IS': r'\=\=',

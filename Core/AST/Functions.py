@@ -3,6 +3,43 @@ from Core.AST.Expressions import ExpressionBase
 import sys
 
 
+class CanBe(BaseBox):
+    def __init__(self, exp, value):
+        self.value = value
+        self.exp = exp
+        self.kind = "boolean"
+
+    def eval(self):
+        if self.value == "int":
+            try:
+                int(self.exp.eval())
+                return True
+            except:
+                return False
+        elif self.value == "float":
+            try:
+                float(self.exp.eval())
+                return True
+            except:
+                return False
+        elif self.value == "str":
+            try:
+                str(self.exp.eval())
+                return True
+            except:
+                return False
+        elif self.value == "bool":
+            try:
+                bool(self.exp.eval())
+                return True
+            except:
+                return False
+        else:
+            print("Invalid Type : \n - Operation : CanBe Function",
+                  "\n - Type : ", self.value)
+            sys.exit(1)
+
+
 class Print(BaseBox):
     def __init__(self, value=ExpressionBase("", "string")):
         self.value = value

@@ -5,7 +5,7 @@ from Core.AST.BinaryOperators import Sum, Sub, Mul, Div, Mod, Pow, DivEu
 from Core.AST.AffectionOperators import SumAffector, SubAffector, DivEuAffector, MulAffector, DivAffector,\
     ModAffector, PowAffector
 from Core.AST.Expressions import ExpressionBase, Nothing
-from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean
+from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean, CanBe
 from Core.AST.Variables import Variable, Variables, AffectionVar
 from Core.AST.UniqueOperators import Increment, Decrement
 from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
@@ -98,6 +98,12 @@ class Parser:
                 self.var.add(var)
             return var
 
+        @self.pg.production('expression : CANBE OPEN_PAREN expression VIRGULE STRING CLOSE_PAREN')
+        def programfunc2(p):
+            func = p[0]
+            exp = p[2]
+            if func.gettokentype() == 'CANBE':
+                return CanBe(exp, p[4].value[1:-1])
 
         @self.pg.production('expression : INT OPEN_PAREN expression CLOSE_PAREN')
         @self.pg.production('expression : FLOATF OPEN_PAREN expression CLOSE_PAREN')
