@@ -6,7 +6,7 @@ from Core.AST.AffectionOperators import SumAffector, SubAffector, DivEuAffector,
     ModAffector, PowAffector
 from Core.AST.Expressions import ExpressionBase, Nothing
 from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean
-from Core.AST.Variables import Variable, Variables
+from Core.AST.Variables import Variable, Variables, AffectionVar
 from Core.AST.UniqueOperators import Increment, Decrement
 from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
 from Core.AST.Conditions import If, IfElse, Else
@@ -90,9 +90,14 @@ class Parser:
 
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):
-            var = Variable(p[0].value, p[2].eval(), p[2].kind)
-            self.var.add(var)
-            return ExpressionBase(var.eval(), p[2].kind)
+            var = self.var.get(p[0].value)
+            if var is not None:
+                return AffectionVar(var, p[2])
+            else:
+                var = Variable(p[0].value, p[2])
+                self.var.add(var)
+            return var
+
 
         @self.pg.production('expression : INT OPEN_PAREN expression CLOSE_PAREN')
         @self.pg.production('expression : FLOATF OPEN_PAREN expression CLOSE_PAREN')
@@ -141,15 +146,9 @@ class Parser:
             var = self.var.get(p[0].value)
             if var is not None:
                 if p[1].gettokentype() == "INCREMENT":
-                    value = Increment(ExpressionBase(var.value, var.kind))
+                    return Increment(var)
                 else:
-                    value = Decrement(ExpressionBase(var.value, var.kind))
-                value = value.eval()
-                if value is not None:
-                    var = Variable(p[0].value, value, var.kind)
-                    self.var.add(var)
-                    return var
-                return Nothing()
+                    return Decrement(var)
             else:
                 print("Variable not declared : \n - Name :", p[0].value)
                 sys.exit(1)
@@ -166,25 +165,19 @@ class Parser:
             op = p[1]
             if var is not None:
                 if op.gettokentype() == 'SUMAFF':
-                    value = SumAffector(ExpressionBase(var.value, var.kind), p[2])
+                    return SumAffector(var, p[2])
                 elif op.gettokentype() == 'SUBAFF':
-                    value = SubAffector(ExpressionBase(var.value, var.kind), p[2])
+                    return SubAffector(var, p[2])
                 elif op.gettokentype() == 'MULAFF':
-                    value = MulAffector(ExpressionBase(var.value, var.kind), p[2])
+                    return MulAffector(var, p[2])
                 elif op.gettokentype() == 'MODAFF':
-                    value = ModAffector(ExpressionBase(var.value, var.kind), p[2])
+                    return ModAffector(var, p[2])
                 elif op.gettokentype() == 'POWAFF':
-                    value = PowAffector(ExpressionBase(var.value, var.kind), p[2])
+                    return PowAffector(var, p[2])
                 elif op.gettokentype() == 'DIVEUAFF':
-                    value = DivEuAffector(ExpressionBase(var.value, var.kind), p[2])
+                    return DivEuAffector(var, p[2])
                 else:
-                    value = DivAffector(ExpressionBase(var.value, var.kind), p[2])
-                value = value.eval()
-                if value is not None:
-                    var = Variable(p[0].value, value, var.kind)
-                    self.var.add(var)
-                    return var
-                return Nothing()
+                    return DivAffector(var, p[2])
             else:
                 print("Variable not declared : \n - Name :", p[0].value)
                 sys.exit(1)
@@ -222,10 +215,9 @@ class Parser:
             e1 = p[0]
             e2 = p[2]
             if op.gettokentype() == "AND":
-                i = And(e1, e2)
+                return And(e1, e2)
             else:
-                i = Or(e1, e2)
-            return ExpressionBase(i.eval(), "boolean")
+                return Or(e1, e2)
 
         @self.pg.production('expression : NOT expression')
         def logicoperator1(p):
@@ -241,16 +233,15 @@ class Parser:
             e1 = p[0]
             e2 = p[2]
             if c.gettokentype() == "IS":
-                i = Egal(e1, e2)
+                return Egal(e1, e2)
             elif c.gettokentype() == "LESS":
-                i = Less(e1, e2)
+                return Less(e1, e2)
             elif c.gettokentype() == "MORE":
-                i = More(e1, e2)
+                return More(e1, e2)
             elif c.gettokentype() == "LESSE":
-                i = LessOrEgal(e1, e2)
+                return LessOrEgal(e1, e2)
             else:
-                i = MoreOrEgal(e1, e2)
-            return ExpressionBase(i.eval(), "boolean")
+                return MoreOrEgal(e1, e2)
 
         @self.pg.production('expression : SUB expression')
         @self.pg.production('expression : SUM expression')
@@ -279,7 +270,7 @@ class Parser:
             elif p[0].gettokentype() == 'IDENTIFIER':
                 var = self.var.get(p[0].value)
                 if var is not None:
-                    return var.eval()
+                    return ExpressionBase(var.value, var.kind, var)
                 else:
                     print("Variable not declared : \n - Name :", p[0].value)
                     sys.exit(1)

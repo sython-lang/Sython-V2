@@ -25,10 +25,27 @@ class Variables(BaseBox):
 
 
 class Variable(BaseBox):
-    def __init__(self, name, value, kind):
+    def __init__(self, name, exp):
         self.name = name
-        self.value = value
-        self.kind = kind
+        self.exp = exp
+        self.kind = exp.kind
+        self.value = None
+
+    def expression(self):
+        return ExpressionBase(self.value, self.kind)
 
     def eval(self):
+        self.value = self.exp.eval()
+        self.kind = self.exp.kind
         return ExpressionBase(self.value, self.kind)
+
+
+class AffectionVar(BaseBox):
+    def __init__(self, var, exp):
+        self.var = var
+        self.exp = exp
+
+    def eval(self):
+        self.var.exp = self.exp
+        self.var.eval()
+        return self.var

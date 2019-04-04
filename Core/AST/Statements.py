@@ -25,8 +25,7 @@ class StatementList(BaseBox):
     def eval(self):
         value = None
         for i in self.statements:
-            # print(i)  # ONLY FOR DEBUG
-            i.eval()
+            value = i.eval()
         return value
 
     @staticmethod

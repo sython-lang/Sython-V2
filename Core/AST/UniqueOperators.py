@@ -10,14 +10,14 @@ class UniqueOp(BaseBox):
 class Increment(UniqueOp):
     def eval(self):
         try:
-            self.var.value += 1
+            self.var.value = self.var.value + 1
             return self.var.value
         except:
             try:
-                self.var.increment()
+                self.var.value = self.var.expression().increment()
                 return self.var.value
             except:
-                print("Operation impossible : \n - Value :", self.var.eval(),
+                print("Operation impossible : \n - Value :", self.var.value,
                       "\n - Type :", self.var.kind,
                       "\n - Operation : Increase")
                 sys.exit(1)
@@ -26,14 +26,14 @@ class Increment(UniqueOp):
 class Decrement(UniqueOp):
     def eval(self):
         try:
-            self.var.value -= 1
+            self.var.value = self.var.value - 1
             return self.var.value
         except:
             try:
-                self.var.decrement()
+                self.var.value = self.var.expression().decrement()
                 return self.var.value
             except:
-                print("Operation impossible : \n - Value :", self.var.eval(),
+                print("Operation impossible : \n - Value :", self.var.value,
                       "\n - Type :", self.var.kind,
                       "\n - Operation : Decrease")
                 sys.exit(1)
