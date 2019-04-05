@@ -6,7 +6,7 @@ class Statement(BaseBox):
         self.exp = exp
 
     def eval(self):
-        return self.exp.eval()
+        self.exp.eval()
 
     @staticmethod
     def gettokentype():
@@ -23,10 +23,8 @@ class StatementList(BaseBox):
             self.statements.append(statement)
 
     def eval(self):
-        value = None
         for i in self.statements:
-            value = i.eval()
-        return value
+            i.eval()
 
     @staticmethod
     def gettokentype():

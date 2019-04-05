@@ -1,7 +1,8 @@
 from Core.lexer import Lexer
 from Core.parser import Parser
 import sys
-from Core.debug import debug  # ONLY FOR DEBUG
+# from Core.debug import debug  # ONLY FOR DEBUG
+
 
 dico = {
     # Comments
@@ -103,6 +104,4 @@ else:
         text_input = input(">>> ")
         tokens = lexer.lex(text_input)
         # debug(lexer, text_input)  # ONLY FOR DEBUG
-        result = parser.parse(tokens)
-        if result is not None:
-            print(result)
+        parser.parse(tokens)

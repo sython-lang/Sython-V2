@@ -7,9 +7,8 @@ class Loop(BaseBox):
         self.statementlist = statementlist
 
     def eval(self):
-        for i in range(self.number-1):
+        for i in range(self.number):
             self.statementlist.eval()
-        return self.statementlist.eval()
 
     @staticmethod
     def gettokentype():
@@ -24,7 +23,6 @@ class While(BaseBox):
     def eval(self):
         while bool(self.condition.eval()):
             self.statementlist.eval()
-        return None
 
     @staticmethod
     def gettokentype():

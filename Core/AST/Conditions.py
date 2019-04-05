@@ -8,9 +8,7 @@ class If(BaseBox):
 
     def eval(self):
         if bool(self.condition.eval()):
-            return self.statementlist.eval()
-        else:
-            return None
+            self.statementlist.eval()
 
     @staticmethod
     def gettokentype():
@@ -30,9 +28,9 @@ class IfElse(BaseBox):
 
     def eval(self):
         if bool(self.condition.eval()):
-            return self.statementlistif.eval()
+            self.statementlistif.eval()
         else:
-            return self.statementlistelse.eval()
+            self.statementlistelse.eval()
 
     @staticmethod
     def gettokentype():
