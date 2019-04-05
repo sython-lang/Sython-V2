@@ -1,0 +1,15 @@
+a = enter("Un nombre : ")
+a =int(a)
+if a == 1
+{
+    show("a = 1")
+}else if a == 2
+{
+    show("a = 2")
+}else if a == 3
+{
+    show("a = 3")
+}else
+{
+    show(a)
+}

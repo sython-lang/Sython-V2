@@ -16,6 +16,7 @@ dico = {
     'INTEGER': r'-?\d+',
 
     # Conditions
+    'ELSEIF': r'(else if)|(elseif)',
     'IF': r'if',
     'OPEN_CRO': r'\{',
     'CLOSE_CRO': r'\}',
