@@ -1,0 +1,7 @@
+a = [0, 1]
+show(a)
+show(a[1])
+a = ["test", "non", "oui"]
+show(a)
+show(a)
+show(a[2])

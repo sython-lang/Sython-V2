@@ -1,5 +1,5 @@
 from rply.token import BaseBox
-from Core.AST.Expressions import ExpressionBase
+from Core.AST.Expressions import ExpressionBase, ExpressionFromList
 
 
 class Variables(BaseBox):
@@ -38,6 +38,56 @@ class Variable(BaseBox):
         self.value = self.exp.eval()
         self.kind = self.exp.kind
         return ExpressionBase(self.value, self.kind)
+
+
+class ListVar(BaseBox):
+    def __init__(self, name, exp):
+        self.name = name
+        self.exp = exp
+        self.kind = "list"
+        self.value = []
+        self.values = []
+
+    def expression(self):
+        return ExpressionBase(self.values, self.kind, self)
+
+    def get(self, indice):
+        return ExpressionFromList(self, indice)
+
+    def eval(self):
+        self.exp.eval()
+        self.values = self.exp.getexpression()
+        self.value = []
+        for i in self.values:
+            self.value.append(i.eval())
+        return self.value
+
+
+class List(BaseBox):
+    def __init__(self, exp, exp2):
+        if type(exp) == List and type(exp2) == List:
+            self.var = exp.var
+            for i in exp2.var:
+                self.var.append(i)
+        elif type(exp) == List:
+            self.var = exp.var
+            self.var.append(exp2)
+        elif type(exp2) == List:
+            self.var = [exp]
+            for i in exp2.var:
+                self.var.append(i)
+        else:
+            self.var = [exp, exp2]
+
+    def add(self, exp):
+        self.var.append(exp)
+
+    def getexpression(self):
+        return self.var
+
+    def eval(self):
+        for i in range(len(self.var)):
+            self.var[i].value = self.var[i].eval()
 
 
 class AffectionVar(BaseBox):

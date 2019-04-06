@@ -6,7 +6,7 @@ from Core.AST.AffectionOperators import SumAffector, SubAffector, DivEuAffector,
     ModAffector, PowAffector
 from Core.AST.Expressions import ExpressionBase
 from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean, CanBe
-from Core.AST.Variables import Variable, Variables, AffectionVar
+from Core.AST.Variables import Variable, Variables, AffectionVar, List, ListVar
 from Core.AST.UniqueOperators import Increment, Decrement
 from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
 from Core.AST.Conditions import If, IfElse, Else, ElseIf, IfElseIf, IfElseIfElse, ElseIfs
@@ -131,6 +131,9 @@ class Parser:
 
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):
+            if type(p[2]) != List:
+                print("Missing hook")
+                sys.exit(1)
             var = self.var.get(p[0].value)
             if var is not None:
                 return AffectionVar(var, p[2])
@@ -138,6 +141,23 @@ class Parser:
                 var = Variable(p[0].value, p[2])
                 self.var.add(var)
             return var
+
+        @self.pg.production('expression : IDENTIFIER EGAL CRO_OPEN expression CRO_CLOSE')
+        def programvar2(p):
+            if type(p[3]) != List:
+                print("Excess hook")
+                sys.exit(1)
+            var = self.var.get(p[0].value)
+            if var is not None:
+                return AffectionVar(var, p[3])
+            else:
+                var = ListVar(p[0].value, p[3])
+                self.var.add(var)
+            return var
+
+        @self.pg.production('expression : expression VIRGULE expression')
+        def list(p):
+            return List(p[0], p[2])
 
         @self.pg.production('expression : CANBE OPEN_PAREN expression VIRGULE STRING CLOSE_PAREN')
         def programfunc2(p):
@@ -299,6 +319,15 @@ class Parser:
                 return Sum(ExpressionBase(0, "integer"), exp)
             else:
                 return Sub(ExpressionBase(0, "integer"), exp)
+
+        @self.pg.production('expression : IDENTIFIER CRO_OPEN INTEGER CRO_CLOSE')
+        def expressionlist(p):
+            var = self.var.get(p[0].value)
+            if var is not None:
+                return var.get(int(p[2].value))
+            else:
+                print("Variable not declared : \n - Name :", p[0].value)
+                sys.exit(1)
 
         @self.pg.production('expression : INTEGER')
         @self.pg.production('expression : FLOAT')

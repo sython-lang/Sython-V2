@@ -76,7 +76,9 @@ dico = {
 
     # Others
     'OPEN_PAREN': r'\(',
-    'CLOSE_PAREN': r'\)'
+    'CLOSE_PAREN': r'\)',
+    'CRO_OPEN': r'\[',
+    'CRO_CLOSE': r'\]'
 }
 
 tokens = []
