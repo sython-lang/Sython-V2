@@ -3,7 +3,7 @@ import sys
 
 
 class ExpressionBase(BaseBox):
-    def __init__(self, value, kind, var = None):
+    def __init__(self, value, kind, var=None):
         self.value = value
         self.kind = kind
         self.var = var
