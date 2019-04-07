@@ -1,20 +1,24 @@
+import sys
+
+
 class Type:
-    def __init__(self):
+    def __init__(self, exp):
         self.name = ""
+        self.exp = exp
 
     def tostr(self):
         return self.name
 
 
 class IntType(Type):
-    def __init__(self):
-        super(IntType).__init__()
+    def __init__(self, exp):
+        super(IntType, self).__init__(exp)
         self.name = "integer"
 
 
 class StrType(Type):
-    def __init__(self):
-        super(StrType).__init__()
+    def __init__(self, exp):
+        super(StrType, self).__init__(exp)
         self.name = "string"
 
     def sum(self, value1, value2):
@@ -26,23 +30,25 @@ class StrType(Type):
     def increment(self, value1):
         return value1 + value1
 
+    def length(self):
+        return len(self.exp.eval())
 
 
 class FloatType(Type):
-    def __init__(self):
-        super(FloatType).__init__()
+    def __init__(self, exp):
+        super(FloatType, self).__init__(exp)
         self.name = "float"
 
 
 class BoolType(Type):
-    def __init__(self):
-        super(BoolType).__init__()
+    def __init__(self, exp):
+        super(BoolType, self).__init__(exp)
         self.name = "bool"
 
 
 class List(Type):
     def __init__(self, exp=None, exp2=None):
-        super(List).__init__()
+        super(List, self).__init__(exp)
         self.name = "list"
         if exp is None and exp2 is None:
             self.var = []
@@ -80,3 +86,4 @@ class List(Type):
     def eval(self):
         for i in range(len(self.var)):
             self.var[i].value = self.var[i].eval()
+

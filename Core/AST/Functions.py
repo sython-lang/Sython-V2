@@ -8,7 +8,7 @@ class CanBe(BaseBox):
     def __init__(self, exp, value):
         self.value = value
         self.exp = exp
-        self.kind = BoolType()
+        self.kind = BoolType(ExpressionBase(True, "boolean"))
 
     def eval(self):
         if self.value == "int":
@@ -44,7 +44,7 @@ class CanBe(BaseBox):
 class Print(BaseBox):
     def __init__(self, value=ExpressionBase("", "string")):
         self.value = value
-        self.kind = StrType()
+        self.kind = StrType(ExpressionBase("", "string"))
 
     def eval(self):
         self.value = self.value.eval()
@@ -55,7 +55,7 @@ class Print(BaseBox):
 class Input(BaseBox):
     def __init__(self, text=""):
         self.text = text
-        self.kind = StrType()
+        self.kind = StrType(ExpressionBase("", "string"))
 
     def eval(self):
         return input(self.text[1:-1])
@@ -64,7 +64,7 @@ class Input(BaseBox):
 class Int(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = IntType()
+        self.kind = IntType(ExpressionBase(0, "int"))
 
     def eval(self):
         try:
@@ -79,7 +79,7 @@ class Int(BaseBox):
 class Float(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = FloatType()
+        self.kind = FloatType(ExpressionBase(0.0, "float"))
 
     def eval(self):
         try:
@@ -94,7 +94,7 @@ class Float(BaseBox):
 class Str(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = StrType()
+        self.kind = StrType(ExpressionBase("", "string"))
 
     def eval(self):
         try:
@@ -109,7 +109,7 @@ class Str(BaseBox):
 class Boolean(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = BoolType()
+        self.kind = BoolType(ExpressionBase(True, "boolean"))
 
     def eval(self):
         try:
@@ -124,7 +124,7 @@ class Boolean(BaseBox):
 class Type(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = StrType()
+        self.kind = StrType(ExpressionBase("", "string"))
 
     def eval(self):
         self.exp.eval()

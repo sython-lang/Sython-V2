@@ -9,7 +9,7 @@ class ExpressionBase(BaseBox):
     def __init__(self, value, kind, var=None):
         self.value = value
         if type(kind) == str:
-            self.kind = Types[kind]()
+            self.kind = Types[kind](self)
         else:
             self.kind = kind
         self.var = var
@@ -41,7 +41,7 @@ class ExpressionBase(BaseBox):
 class ExpressionFromList(ExpressionBase):
     def __init__(self, var, indice):
         self.value = ""
-        self.kind = Types["list"]()
+        self.kind = Types["list"](self)
         self.var = var
         self.indice = indice
 
