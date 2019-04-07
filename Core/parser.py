@@ -363,8 +363,8 @@ class Parser:
         @self.pg.error
         def error_handle(token):
             print("Syntax unexcepted : \n - Type :", token.gettokentype(),
-                  "\n - Position : Line", token.getsourcepos().lineno, "| Column :", token.getsourcepos().colno,
-                  "\n - Token :", token.value)
+                  "\n - Position :", token.getsourcepos(),
+                  "\n - Token :", token.getstr())
             sys.exit(1)
 
     def get_parser(self):
