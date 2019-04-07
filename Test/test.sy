@@ -3,5 +3,7 @@ show(a)
 show(a[1])
 a = ["test", "non", "oui"]
 show(a)
+a = []
 show(a)
-show(a[2])
+a = [201]
+show(a)

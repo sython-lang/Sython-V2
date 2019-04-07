@@ -64,20 +64,33 @@ class ListVar(BaseBox):
 
 
 class List(BaseBox):
-    def __init__(self, exp, exp2):
-        if type(exp) == List and type(exp2) == List:
-            self.var = exp.var
-            for i in exp2.var:
-                self.var.append(i)
-        elif type(exp) == List:
-            self.var = exp.var
-            self.var.append(exp2)
-        elif type(exp2) == List:
-            self.var = [exp]
-            for i in exp2.var:
-                self.var.append(i)
+    def __init__(self, exp=None, exp2=None):
+        if exp is None and exp2 is None:
+            self.var = []
+        elif exp is None:
+            if type(exp2) == List:
+                self.var = exp2.var
+            else:
+                self.var = [exp2]
+        elif exp2 is None:
+            if type(exp) == List:
+                self.var = exp.var
+            else:
+                self.var = [exp]
         else:
-            self.var = [exp, exp2]
+            if type(exp) == List and type(exp2) == List:
+                self.var = exp.var
+                for i in exp2.var:
+                    self.var.append(i)
+            elif type(exp) == List:
+                self.var = exp.var
+                self.var.append(exp2)
+            elif type(exp2) == List:
+                self.var = [exp]
+                for i in exp2.var:
+                    self.var.append(i)
+            else:
+                self.var = [exp, exp2]
 
     def add(self, exp):
         self.var.append(exp)

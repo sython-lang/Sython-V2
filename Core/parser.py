@@ -142,16 +142,23 @@ class Parser:
                 self.var.add(var)
             return var
 
-        @self.pg.production('expression : IDENTIFIER EGAL CRO_OPEN expression CRO_CLOSE')
+        @self.pg.production('expression : IDENTIFIER EGAL CRO_OPEN CRO_CLOSE')
         def programvar2(p):
-            if type(p[3]) != List:
-                print("Excess hook")
-                sys.exit(1)
             var = self.var.get(p[0].value)
             if var is not None:
-                return AffectionVar(var, p[3])
+                return AffectionVar(var, List())
             else:
-                var = ListVar(p[0].value, p[3])
+                var = ListVar(p[0].value, List())
+                self.var.add(var)
+            return var
+
+        @self.pg.production('expression : IDENTIFIER EGAL CRO_OPEN expression CRO_CLOSE')
+        def programvar3(p):
+            var = self.var.get(p[0].value)
+            if var is not None:
+                return AffectionVar(var, List(p[3]))
+            else:
+                var = ListVar(p[0].value, List(p[3]))
                 self.var.add(var)
             return var
 
