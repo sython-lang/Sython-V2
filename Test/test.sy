@@ -1,4 +1,4 @@
-a = [0, 1]
+a = [0, 20.3]
 show(a)
 show(a[1])
 a = ["test", "non", "oui"]

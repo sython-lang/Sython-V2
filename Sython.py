@@ -12,7 +12,7 @@ dico = {
     # Types
     'STRING': r'(\"([^\\\n]|(\\.))*?\")|(\'([^\\\n]|(\\.))*?\')',
     'BOOLEAN': r'(true)|(false)',
-    'FLOAT': r'-?\d+.\d+',
+    'FLOAT': r'-?\d+\.\d+',
     'INTEGER': r'-?\d+',
 
     # Conditions

@@ -336,8 +336,8 @@ class Parser:
                 print("Variable not declared : \n - Name :", p[0].value)
                 sys.exit(1)
 
-        @self.pg.production('expression : INTEGER')
         @self.pg.production('expression : FLOAT')
+        @self.pg.production('expression : INTEGER')
         @self.pg.production('expression : STRING')
         @self.pg.production('expression : BOOLEAN')
         @self.pg.production('expression : IDENTIFIER')
