@@ -6,13 +6,14 @@ from Core.AST.AffectionOperators import SumAffector, SubAffector, DivEuAffector,
     ModAffector, PowAffector
 from Core.AST.Expressions import ExpressionBase
 from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean, CanBe
-from Core.AST.Variables import Variable, Variables, AffectionVar, List, ListVar
+from Core.AST.Variables import Variable, Variables, AffectionVar, ListVar
 from Core.AST.UniqueOperators import Increment, Decrement
 from Core.AST.Comparators import Egal, Less, LessOrEgal, More, MoreOrEgal
 from Core.AST.Conditions import If, IfElse, Else, ElseIf, IfElseIf, IfElseIfElse, ElseIfs
 from Core.AST.LogicOperators import And, Or, Not
 from Core.AST.Statements import Statement, StatementList
 from Core.AST.Loops import Loop, While
+from Core.AST.Types import List
 
 
 class Parser:
@@ -131,7 +132,7 @@ class Parser:
 
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):
-            if type(p[2]) != List:
+            if type(p[2]) == List:
                 print("Missing hook")
                 sys.exit(1)
             var = self.var.get(p[0].value)

@@ -1,9 +1,9 @@
-a = [0, 20.3]
-show(a)
-show(a[1])
-a = ["test", "non", "oui"]
-show(a)
-a = []
-show(a)
-a = [201]
-show(a)
+a = "1"
+show(type(a))
+a = int(a)
+show(type(a))
+b = "bonjour"
+show(b)
+b = b- 1
+b = b + "ba"
+show(b)

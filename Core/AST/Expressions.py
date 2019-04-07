@@ -1,11 +1,17 @@
 from rply.token import BaseBox
+from Core.AST.Types import IntType, StrType, BoolType, FloatType, List
 import sys
+
+Types = {"integer": IntType, "string": StrType, "boolean": BoolType, "float": FloatType, "list": List}
 
 
 class ExpressionBase(BaseBox):
     def __init__(self, value, kind, var=None):
         self.value = value
-        self.kind = kind
+        if type(kind) == str:
+            self.kind = Types[kind]()
+        else:
+            self.kind = kind
         self.var = var
 
     def eval(self):
@@ -13,29 +19,29 @@ class ExpressionBase(BaseBox):
             self.value, self.kind = self.var.value, self.var.kind
         return self.value
 
+    def gettype(self):
+        return self.kind
+
     def sum(self, exp):
-        if self.kind == "string" or exp.kind == "string":
-            return str(self.eval()) + str(exp.eval())
-        else:
-            raise Exception
+        try:
+            self.value = self.kind.sum(self.eval(), exp.eval())
+        except:
+            self.value = exp.kind.sum(exp.eval(), self.eval())
+        return self.value
 
     def sub(self, exp):
-        if self.kind == "string" and exp.kind == "integer":
-            return self.eval()[:len(self.eval())-exp.value]
-        else:
-            raise Exception
+        self.value = self.kind.sub(self.eval(), exp.eval())
+        return self.value
 
     def increment(self):
-        if self.kind == "string":
-            self.value = self.eval() * 2
-        else:
-            raise Exception
+        self.value = self.kind.increment(self.eval())
+        return self.value
 
 
 class ExpressionFromList(ExpressionBase):
     def __init__(self, var, indice):
         self.value = ""
-        self.kind = "string"
+        self.kind = Types["list"]()
         self.var = var
         self.indice = indice
 

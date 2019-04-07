@@ -1,13 +1,14 @@
 from rply.token import BaseBox
 from Core.AST.Expressions import ExpressionBase
 import sys
+from Core.AST.Types import BoolType, StrType, IntType, FloatType
 
 
 class CanBe(BaseBox):
     def __init__(self, exp, value):
         self.value = value
         self.exp = exp
-        self.kind = "boolean"
+        self.kind = BoolType()
 
     def eval(self):
         if self.value == "int":
@@ -43,17 +44,18 @@ class CanBe(BaseBox):
 class Print(BaseBox):
     def __init__(self, value=ExpressionBase("", "string")):
         self.value = value
-        self.kind = "string"
+        self.kind = StrType()
 
     def eval(self):
-        print(self.value.eval())
-        return self.value.eval()
+        self.value = self.value.eval()
+        print(self.value)
+        return self.value
 
 
 class Input(BaseBox):
     def __init__(self, text=""):
         self.text = text
-        self.kind = "string"
+        self.kind = StrType()
 
     def eval(self):
         return input(self.text[1:-1])
@@ -62,7 +64,7 @@ class Input(BaseBox):
 class Int(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = "integer"
+        self.kind = IntType()
 
     def eval(self):
         try:
@@ -77,7 +79,7 @@ class Int(BaseBox):
 class Float(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = "float"
+        self.kind = FloatType()
 
     def eval(self):
         try:
@@ -92,7 +94,7 @@ class Float(BaseBox):
 class Str(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = "string"
+        self.kind = StrType()
 
     def eval(self):
         try:
@@ -107,7 +109,7 @@ class Str(BaseBox):
 class Boolean(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = "boolean"
+        self.kind = BoolType()
 
     def eval(self):
         try:
@@ -122,7 +124,8 @@ class Boolean(BaseBox):
 class Type(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = "string"
+        self.kind = StrType()
 
     def eval(self):
-        return self.exp.kind
+        self.exp.eval()
+        return self.exp.gettype().tostr()
