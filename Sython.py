@@ -78,7 +78,8 @@ dico = {
     'OPEN_PAREN': r'\(',
     'CLOSE_PAREN': r'\)',
     'CRO_OPEN': r'\[',
-    'CRO_CLOSE': r'\]'
+    'CRO_CLOSE': r'\]',
+    'POINT': r'\.'
 }
 
 tokens = []

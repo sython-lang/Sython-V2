@@ -35,6 +35,9 @@ class Variable(BaseBox):
     def expression(self):
         return ExpressionBase(self.value, self.kind)
 
+    def gettype(self):
+        return self.kind
+
     def eval(self):
         self.value = self.exp.eval()
         self.kind = self.exp.kind

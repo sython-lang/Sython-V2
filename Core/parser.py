@@ -13,7 +13,7 @@ from Core.AST.Conditions import If, IfElse, Else, ElseIf, IfElseIf, IfElseIfElse
 from Core.AST.LogicOperators import And, Or, Not
 from Core.AST.Statements import Statement, StatementList
 from Core.AST.Loops import Loop, While
-from Core.AST.Types import List
+from Core.AST.Types import List, MemberType
 
 
 class Parser:
@@ -162,6 +162,15 @@ class Parser:
                 var = ListVar(p[0].value, List(p[3]))
                 self.var.add(var)
             return var
+
+        @self.pg.production('expression : IDENTIFIER POINT IDENTIFIER OPEN_PAREN CLOSE_PAREN')
+        def membervar(p):
+            var = self.var.get(p[0].value)
+            if var is not None:
+                return MemberType(p[2].value, var)
+            else:
+                print("Variable not declared : \n - Name :", p[0].value)
+                sys.exit(1)
 
         @self.pg.production('expression : expression VIRGULE expression')
         def list(p):

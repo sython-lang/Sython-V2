@@ -6,6 +6,13 @@ class Type:
         self.name = ""
         self.exp = exp
 
+    def callmember(self, membre):
+        try:
+            return eval("self."+membre+"()")
+        except:
+            print("Unknown Member")
+            sys.exit(1)
+
     def tostr(self):
         return self.name
 
@@ -87,3 +94,11 @@ class List(Type):
         for i in range(len(self.var)):
             self.var[i].value = self.var[i].eval()
 
+class MemberType:
+    def __init__(self, name, var):
+        self.name = name
+        self.var = var
+        self.kind = typesOfMembers[self.name](None)
+
+    def eval(self):
+        return self.var.gettype().callmember(self.name)

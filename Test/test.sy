@@ -1,9 +1,3 @@
-a = "1"
-show(type(a))
-a = int(a)
-show(type(a))
-b = "bonjour"
-show(b)
-b = b- 1
-b = b + "ba"
+a = "JeCompte11C"
+b = a.length()
 show(b)
