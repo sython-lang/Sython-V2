@@ -1,8 +1,15 @@
 from rply.token import BaseBox
-from Core.AST.Types import IntType, StrType, BoolType, FloatType, List
+from Core.AST.Types import IntType, StrType, BoolType, FloatType, List, NoneType
 import sys
 
-Types = {"integer": IntType, "string": StrType, "boolean": BoolType, "float": FloatType, "list": List}
+Types = {
+    "integer": IntType,
+    "string": StrType,
+    "boolean": BoolType,
+    "float": FloatType,
+    "list": List,
+    "none": NoneType
+}
 
 
 class ExpressionBase(BaseBox):
@@ -16,6 +23,9 @@ class ExpressionBase(BaseBox):
 
     def eval(self):
         if self.var is not None:
+            from Core.AST.Variables import ListVar
+            if type(self.var) == ListVar:
+                self.var.eval()
             self.value, self.kind = self.var.value, self.var.kind
         return self.value
 

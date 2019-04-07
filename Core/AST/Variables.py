@@ -17,7 +17,6 @@ class Variables(BaseBox):
         for i in self.vars:
             if i.name == nom:
                 return i
-        return None
 
     def set(self, nom, exp):
         var = self.get(nom)
@@ -35,6 +34,9 @@ class Variable(BaseBox):
     def expression(self):
         return ExpressionBase(self.value, self.kind)
 
+    def get(self, indice):
+        return ExpressionBase(None, "none")
+
     def gettype(self):
         return self.kind
 
@@ -48,7 +50,7 @@ class ListVar(BaseBox):
     def __init__(self, name, exp):
         self.name = name
         self.exp = exp
-        self.kind = List("")
+        self.kind = exp
         self.value = []
         self.values = []
 
@@ -57,6 +59,9 @@ class ListVar(BaseBox):
 
     def get(self, indice):
         return ExpressionFromList(self, indice)
+
+    def gettype(self):
+        return self.kind
 
     def eval(self):
         self.exp.eval()
@@ -73,6 +78,9 @@ class AffectionVar(BaseBox):
         self.exp = exp
 
     def eval(self):
-        self.var.exp = self.exp
+        if type(self.exp) == List and type(self.var.exp) == List:
+            self.var.exp.var = self.exp.var
+        else:
+            self.var.exp = self.exp
         self.var.eval()
         return self.var

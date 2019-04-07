@@ -5,16 +5,24 @@ class Type:
     def __init__(self, exp):
         self.name = ""
         self.exp = exp
+        self.paramMember = []
 
-    def callmember(self, membre):
+    def callmember(self, membre, param):
+        self.paramMember = param
         try:
             return eval("self."+membre+"()")
-        except:
-            print("Unknown Member")
+        except AttributeError:
+            print("Unknown Member for "+self.name)
             sys.exit(1)
 
     def tostr(self):
         return self.name
+
+
+class NoneType(Type):
+    def __init__(self, exp):
+        super(NoneType, self).__init__(exp)
+        self.name = "none"
 
 
 class IntType(Type):
@@ -38,6 +46,9 @@ class StrType(Type):
         return value1 + value1
 
     def length(self):
+        if self.paramMember:
+            print("Unexpected argument for member")
+            sys.exit(1)
         return len(self.exp.eval())
 
 
@@ -57,6 +68,7 @@ class List(Type):
     def __init__(self, exp=None, exp2=None):
         super(List, self).__init__(exp)
         self.name = "list"
+        self.kind = self
         if exp is None and exp2 is None:
             self.var = []
         elif exp is None:
@@ -94,15 +106,41 @@ class List(Type):
         for i in range(len(self.var)):
             self.var[i].value = self.var[i].eval()
 
+    def length(self):
+        if self.paramMember:
+            print("Unexpected argument for member")
+            sys.exit(1)
+        self.eval()
+        return len(self.var)
 
-typesOfMembers = {"length": IntType}
+    def remove(self):
+        if len(self.paramMember) != 1:
+            print("Unexpected argument for member")
+            sys.exit(1)
+        if type(self.paramMember[0].kind) != IntType:
+            print("Argument must be a integer for member")
+            sys.exit(1)
+        self.eval()
+        value = self.var[self.paramMember[0].eval()]
+        del self.var[self.paramMember[0].eval()]
+        return value.eval()
+
+
+typesOfMembers = {"length": IntType, "remove": NoneType}
 
 
 class MemberType:
-    def __init__(self, name, var):
+    def __init__(self, name, var, param=None):
+        if param is None:
+            param = []
         self.name = name
         self.var = var
-        self.kind = typesOfMembers[self.name](None)
+        try:
+            self.kind = typesOfMembers[self.name](None)
+        except KeyError:
+            print("Unknown Member")
+            sys.exit(1)
+        self.param = param
 
     def eval(self):
-        return self.var.gettype().callmember(self.name)
+        return self.var.gettype().callmember(self.name, self.param)

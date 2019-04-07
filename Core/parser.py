@@ -133,7 +133,7 @@ class Parser:
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):
             if type(p[2]) == List:
-                print("Missing hook")
+                print("Expected hook")
                 sys.exit(1)
             var = self.var.get(p[0].value)
             if var is not None:
@@ -168,6 +168,15 @@ class Parser:
             var = self.var.get(p[0].value)
             if var is not None:
                 return MemberType(p[2].value, var)
+            else:
+                print("Variable not declared : \n - Name :", p[0].value)
+                sys.exit(1)
+
+        @self.pg.production('expression : IDENTIFIER POINT IDENTIFIER OPEN_PAREN expression CLOSE_PAREN')
+        def membervar2(p):
+            var = self.var.get(p[0].value)
+            if var is not None:
+                return MemberType(p[2].value, var, [p[4]])
             else:
                 print("Variable not declared : \n - Name :", p[0].value)
                 sys.exit(1)
