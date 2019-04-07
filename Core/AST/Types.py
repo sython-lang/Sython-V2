@@ -94,6 +94,10 @@ class List(Type):
         for i in range(len(self.var)):
             self.var[i].value = self.var[i].eval()
 
+
+typesOfMembers = {"length": IntType}
+
+
 class MemberType:
     def __init__(self, name, var):
         self.name = name
