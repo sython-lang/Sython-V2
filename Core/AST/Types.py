@@ -1,4 +1,5 @@
 import sys
+from Core.Errors import error, errors
 
 
 class Type:
@@ -12,7 +13,11 @@ class Type:
         try:
             return eval("self."+membre+"()")
         except AttributeError:
-            print("Unknown Member for "+self.name)
+            error(errors.NOTDECLARED, "Unknown Member", {
+                "type": "typeerror, member",
+                "member": membre,
+                "typeerror": self.name
+            })
             sys.exit(1)
 
     def tostr(self):
@@ -46,8 +51,14 @@ class StrType(Type):
         return value1 + value1
 
     def length(self):
-        if self.paramMember:
-            print("Unexpected argument for member")
+        nbarg = 0
+        if len(self.paramMember) != nbarg:
+            error(errors.NUMBERARG, "", {
+                "type": "nbwanted, nbgived, member",
+                "member": "length",
+                "nbgived": len(self.paramMember),
+                "nbwanted": nbarg
+            })
             sys.exit(1)
         return len(self.exp.eval())
 
@@ -107,18 +118,35 @@ class List(Type):
             self.var[i].value = self.var[i].eval()
 
     def length(self):
-        if self.paramMember:
-            print("Unexpected argument for member")
+        nbarg = 0
+        if len(self.paramMember) != nbarg:
+            error(errors.NUMBERARG, "", {
+                "type": "nbwanted, nbgived, member",
+                "member": "length",
+                "nbgived": len(self.paramMember),
+                "nbwanted": nbarg
+            })
             sys.exit(1)
         self.eval()
         return len(self.var)
 
     def remove(self):
-        if len(self.paramMember) != 1:
-            print("Unexpected argument for member")
+        nbarg = 1
+        if len(self.paramMember) != nbarg:
+            error(errors.NUMBERARG, "", {
+                "type": "nbwanted, nbgived, member",
+                "member": "length",
+                "nbgived": len(self.paramMember),
+                "nbwanted": nbarg
+            })
             sys.exit(1)
         if type(self.paramMember[0].kind) != IntType:
-            print("Argument must be a integer for member")
+            error(errors.INVALIDTYPE, "", {
+                "type": "typewanted, typegived, member",
+                "member": "remove",
+                "typegived": self.paramMember[0].kind.tostr(),
+                "typewanted": IntType(None).tostr()
+            })
             sys.exit(1)
         self.eval()
         value = self.var[self.paramMember[0].eval()]
@@ -138,7 +166,11 @@ class MemberType:
         try:
             self.kind = typesOfMembers[self.name](None)
         except KeyError:
-            print("Unknown Member")
+            error(errors.NOTDECLARED, "Unknown Member", {
+                "type": "typeerror, member",
+                "member": self.name,
+                "typeerror": self.var.gettype().tostr()
+            })
             sys.exit(1)
         self.param = param
 

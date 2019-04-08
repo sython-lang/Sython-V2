@@ -1,5 +1,6 @@
 from rply.token import BaseBox
 import sys
+from Core.Errors import error, errors
 
 
 class UniqueOp(BaseBox):
@@ -17,9 +18,11 @@ class Increment(UniqueOp):
                 self.var.value = self.var.expression().increment()
                 return self.var.value
             except:
-                print("Operation impossible : \n - Value :", self.var.value,
-                      "\n - Type :", self.var.kind,
-                      "\n - Operation : Increase")
+                error(errors.IMPOSSIBLEOPERATION, "", {
+                    "type": "operationtype, var",
+                    "operationtype": "Increase",
+                    "var": self.var
+                })
                 sys.exit(1)
 
 
@@ -33,7 +36,9 @@ class Decrement(UniqueOp):
                 self.var.value = self.var.expression().decrement()
                 return self.var.value
             except:
-                print("Operation impossible : \n - Value :", self.var.value,
-                      "\n - Type :", self.var.kind,
-                      "\n - Operation : Decrease")
+                error(errors.IMPOSSIBLEOPERATION, "", {
+                    "type": "operationtype, var",
+                    "operationtype": "Decrease",
+                    "var": self.var
+                })
                 sys.exit(1)

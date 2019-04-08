@@ -1,19 +1,52 @@
-a = [0, 20.3]
-show(a)
-show(a[1])
-a = ["test", "non", "oui"]
-show(a)
-a = []
-show(a)
-a = [201]
-show(a)
-a = ["oui", "non"]
-show(a)
-b = a.length()
-c = a.remove(0)
-show(b)
-show(a)
-show(c)
-d = a.remove(0)
-show(a)
-show(d)
+# NotDeclared
+# show(a)
+
+# InvalidType
+# a = 1
+# a = []
+
+# UnexceptedSyntax
+# if true
+# {
+#     show("oui")
+# }else
+# {
+#     show("non")
+# }else if true
+# {
+#     show("wut")
+# }
+
+# ImpossibleOperation
+# a = ""
+# a--
+
+# NotDeclared
+# a = 1
+# a.length()
+
+# InvalidNumber
+# a = "aois"
+# a.length(2)
+
+# InvalidType
+# a = [1, 2]
+# a.remove("k")
+
+# InvalidType
+# canbe(1, "list")
+
+# ImpossibleOperation
+# a = int("ok")
+
+# IndexOutOfRange
+# a = [1]
+# b = a[1]
+
+# ImpossibleOperation
+# a = "s"
+# b = a - "b"
+
+# ImpossibleOperation
+# a = "s"
+# a -= "b"

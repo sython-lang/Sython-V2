@@ -1,6 +1,7 @@
 from rply.token import BaseBox
 from Core.AST.Types import IntType, StrType, BoolType, FloatType, List, NoneType
 import sys
+from Core.Errors import error, errors
 
 Types = {
     "integer": IntType,
@@ -62,8 +63,11 @@ class ExpressionFromList(ExpressionBase):
             value = []
             for i in values:
                 value.append(i.eval())
-            print("List index out of range : \n - Index :", self.indice,
-                  "\n - List :", value)
+            error(errors.INDEXOUTOFRANGE, "", {
+                "type": "max, index",
+                "index": self.indice,
+                "max": len(var)-1
+            })
             sys.exit(1)
         self.value, self.kind = var[self.indice].value, var[self.indice].kind
         return self.value

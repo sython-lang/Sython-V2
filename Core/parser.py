@@ -1,10 +1,12 @@
 from rply import ParserGenerator
 import sys
 
+from Core.Errors import error, errors
+
 from Core.AST.BinaryOperators import Sum, Sub, Mul, Div, Mod, Pow, DivEu
 from Core.AST.AffectionOperators import SumAffector, SubAffector, DivEuAffector, MulAffector, DivAffector,\
     ModAffector, PowAffector
-from Core.AST.Expressions import ExpressionBase
+from Core.AST.Expressions import ExpressionBase, Nothing
 from Core.AST.Functions import Print, Input, Int, Str, Float, Type, Boolean, CanBe
 from Core.AST.Variables import Variable, Variables, AffectionVar, ListVar
 from Core.AST.UniqueOperators import Increment, Decrement
@@ -107,7 +109,7 @@ class Parser:
         @self.pg.production('if_statement : if_statement else_statement')
         def ifelse(p):
             if type(p[0]) == IfElse:
-                print("Alone Else.")
+                error(errors.UNEXPECTEDSYNTAX, "Alone Else", {"type": ""})
                 sys.exit(1)
             elif type(p[0]) == IfElseIf:
                 return IfElseIfElse(If(p[0].ifcondition, p[0].ifstatementlist), p[0].elseifs, p[1])
@@ -117,7 +119,7 @@ class Parser:
         @self.pg.production('if_statement : if_statement elseif_statement')
         def ifelseif(p):
             if type(p[0]) == IfElse:
-                print("Alone ElseIf.")
+                error(errors.UNEXPECTEDSYNTAX, "Alone ElseIf", {"type": ""})
                 sys.exit(1)
             return IfElseIf(p[0], p[1])
 
@@ -133,12 +135,13 @@ class Parser:
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):
             if type(p[2]) == List:
-                print("Expected hook")
+                error(errors.EXPECTEDSYNTAX, "Expected hook around List.", {"type": "token",
+                                                                            "token": p[0]})
                 sys.exit(1)
             var = self.var.get(p[0].value)
             if var is not None:
                 if type(var) == ListVar:
-                    print("Cannot have basic type.")
+                    error(errors.INVALIDTYPE, "Cannot have basic type.", {"type": "token", "token": p[0]})
                     sys.exit(1)
                 return AffectionVar(var, p[2])
             else:
@@ -151,7 +154,7 @@ class Parser:
             var = self.var.get(p[0].value)
             if var is not None:
                 if type(var) == Variable:
-                    print("Cannot have complex type.")
+                    error(errors.INVALIDTYPE, "Cannot have complex type.", {"type": "token", "token": p[0]})
                     sys.exit(1)
                 return AffectionVar(var, List())
             else:
@@ -164,7 +167,7 @@ class Parser:
             var = self.var.get(p[0].value)
             if var is not None:
                 if type(var) == Variable:
-                    print("Cannot have complex type.")
+                    error(errors.INVALIDTYPE, "Cannot have complex type.", {"type": "token", "token": p[0]})
                     sys.exit(1)
                 return AffectionVar(var, List(p[3]))
             else:
@@ -178,7 +181,7 @@ class Parser:
             if var is not None:
                 return MemberType(p[2].value, var)
             else:
-                print("Variable not declared : \n - Name :", p[0].value)
+                error(errors.NOTDECLARED, "Variable is not declared.", {"type": "token", "token": p[0]})
                 sys.exit(1)
 
         @self.pg.production('expression : IDENTIFIER POINT IDENTIFIER OPEN_PAREN expression CLOSE_PAREN')
@@ -187,7 +190,7 @@ class Parser:
             if var is not None:
                 return MemberType(p[2].value, var, [p[4]])
             else:
-                print("Variable not declared : \n - Name :", p[0].value)
+                error(errors.NOTDECLARED, "Variable is not declared.", {"type": "token", "token": p[0]})
                 sys.exit(1)
 
         @self.pg.production('expression : expression VIRGULE expression')
@@ -252,7 +255,7 @@ class Parser:
                 else:
                     return Decrement(var)
             else:
-                print("Variable not declared : \n - Name :", p[0].value)
+                error(errors.NOTDECLARED, "Variable is not declared.", {"type": "token", "token": p[0]})
                 sys.exit(1)
 
         @self.pg.production('expression : IDENTIFIER SUMAFF expression')
@@ -281,7 +284,7 @@ class Parser:
                 else:
                     return DivAffector(var, p[2])
             else:
-                print("Variable not declared : \n - Name :", p[0].value)
+                error(errors.NOTDECLARED, "Variable is not declared.", {"type": "token", "token": p[0]})
                 sys.exit(1)
 
         @self.pg.production('expression : expression SUM expression')
@@ -361,7 +364,7 @@ class Parser:
             if var is not None:
                 return var.get(int(p[2].value))
             else:
-                print("Variable not declared : \n - Name :", p[0].value)
+                error(errors.NOTDECLARED, "Variable is not declared.", {"type": "token", "token": p[0]})
                 sys.exit(1)
 
         @self.pg.production('expression : FLOAT')
@@ -383,16 +386,15 @@ class Parser:
                 if var is not None:
                     return ExpressionBase(var.value, var.kind, var)
                 else:
-                    print("Variable not declared : \n - Name :", p[0].value)
+                    error(errors.NOTDECLARED, "Variable is not declared.", {"type": "token", "token": p[0]})
                     sys.exit(1)
             else:
                 return ExpressionBase(int(p[0].value), "integer")
 
         @self.pg.error
         def error_handle(token):
-            print("Syntax unexcepted : \n - Type :", token.gettokentype(),
-                  "\n - Position :", token.getsourcepos(),
-                  "\n - Token :", token.getstr())
+            print("Syntax unexcepted : \n - Position :", token.getsourcepos(),
+                  "\n - Token : Valeur =", token.getstr(), "| Type =", token.gettokentype())
             sys.exit(1)
 
     def get_parser(self):

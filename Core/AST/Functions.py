@@ -2,6 +2,7 @@ from rply.token import BaseBox
 from Core.AST.Expressions import ExpressionBase
 import sys
 from Core.AST.Types import BoolType, StrType, IntType, FloatType
+from Core.Errors import error, errors
 
 
 class CanBe(BaseBox):
@@ -36,8 +37,12 @@ class CanBe(BaseBox):
             except:
                 return False
         else:
-            print("Invalid Type : \n - Operation : CanBe Function",
-                  "\n - Type : ", self.value)
+            error(errors.INVALIDTYPE, "", {
+                "type": "operationtype, typegived, typewanted",
+                "typewanted": "integer, string, float, boolean",
+                "typegived": self.value,
+                "operationtype": "CanBe Function"
+            })
             sys.exit(1)
 
 
@@ -64,15 +69,17 @@ class Input(BaseBox):
 class Int(BaseBox):
     def __init__(self, exp):
         self.exp = exp
-        self.kind = IntType(ExpressionBase(0, "int"))
+        self.kind = IntType(ExpressionBase(0, "integer"))
 
     def eval(self):
         try:
             return int(self.exp.eval())
         except:
-            print("Operation impossible : \n - Value :", self.exp.eval(),
-                  "\n - Type :", self.exp.kind,
-                  "\n - Operation : Become Integer")
+            error(errors.IMPOSSIBLEOPERATION, "", {
+                "type": "operationtype, value",
+                "operationtype": "Become Integer",
+                "value": self.exp.eval()
+            })
             sys.exit(1)
 
 
@@ -85,9 +92,11 @@ class Float(BaseBox):
         try:
             return float(self.exp.eval())
         except:
-            print("Operation impossible : \n - Value :", self.exp.eval(),
-                  "\n - Type :", self.exp.kind,
-                  "\n - Operation : Become Float")
+            error(errors.IMPOSSIBLEOPERATION, "", {
+                "type": "operationtype, value",
+                "operationtype": "Become Float",
+                "value": self.exp.eval()
+            })
             sys.exit(1)
 
 
@@ -100,9 +109,11 @@ class Str(BaseBox):
         try:
             return str(self.exp.eval())
         except:
-            print("Operation impossible : \n - Value :", self.exp.eval(),
-                  "\n - Type :", self.exp.kind,
-                  "\n - Operation : Become String")
+            error(errors.IMPOSSIBLEOPERATION, "", {
+                "type": "operationtype, value",
+                "operationtype": "Become String",
+                "value": self.exp.eval()
+            })
             sys.exit(1)
 
 
@@ -115,9 +126,11 @@ class Boolean(BaseBox):
         try:
             return bool(self.exp.eval())
         except:
-            print("Operation impossible : \n - Value :", self.exp.eval(),
-                  "\n - Type :", self.exp.kind,
-                  "\n - Operation : Become Float")
+            error(errors.IMPOSSIBLEOPERATION, "", {
+                "type": "operationtype, value",
+                "operationtype": "Become Boolean",
+                "value": self.exp.eval()
+            })
             sys.exit(1)
 
 
