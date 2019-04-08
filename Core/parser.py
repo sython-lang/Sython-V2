@@ -137,6 +137,9 @@ class Parser:
                 sys.exit(1)
             var = self.var.get(p[0].value)
             if var is not None:
+                if type(var) == ListVar:
+                    print("Cannot have basic type.")
+                    sys.exit(1)
                 return AffectionVar(var, p[2])
             else:
                 var = Variable(p[0].value, p[2])
@@ -147,6 +150,9 @@ class Parser:
         def programvar2(p):
             var = self.var.get(p[0].value)
             if var is not None:
+                if type(var) == Variable:
+                    print("Cannot have complex type.")
+                    sys.exit(1)
                 return AffectionVar(var, List())
             else:
                 var = ListVar(p[0].value, List())
@@ -157,6 +163,9 @@ class Parser:
         def programvar3(p):
             var = self.var.get(p[0].value)
             if var is not None:
+                if type(var) == Variable:
+                    print("Cannot have complex type.")
+                    sys.exit(1)
                 return AffectionVar(var, List(p[3]))
             else:
                 var = ListVar(p[0].value, List(p[3]))
