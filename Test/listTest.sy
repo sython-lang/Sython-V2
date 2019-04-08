@@ -7,3 +7,13 @@ a = []
 show(a)
 a = [201]
 show(a)
+a = ["oui", "non"]
+show(a)
+b = a.length()
+c = a.remove(0)
+show(b)
+show(a)
+show(c)
+d = a.remove(0)
+show(a)
+show(d)

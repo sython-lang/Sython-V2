@@ -130,7 +130,7 @@ class Parser:
 
         @self.pg.production('statement : COMMENT')
         def statement(p):
-            return None
+            return Nothing()
 
         @self.pg.production('expression : IDENTIFIER EGAL expression')
         def programvar(p):
